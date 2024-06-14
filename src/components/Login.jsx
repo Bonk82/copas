@@ -47,7 +47,8 @@ export const Login = () => {
   
   const signUp = async(e)=>{
     e.preventDefault()
-    if(!form.email || form.password) {
+    console.log('signup',form);
+    if(!form.email || !form.password) {
       setError('Debe llenar email y password con datos adecuados')
       return false
     }
