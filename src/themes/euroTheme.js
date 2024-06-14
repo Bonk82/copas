@@ -8,7 +8,7 @@ export const euroTheme = createTheme({
     //Ocean boat blue	#1077C3; Picton blue	#49BCE3
     palette: {
         primary: {
-            main: '#0e376d'
+            main: '#0864a1'
         },
         secondary: {
             main: '#2da1d6'
@@ -23,7 +23,7 @@ export const euroTheme = createTheme({
             main:purple[300]
         },
         persist: {
-            main: '#0e376d'
+            main: '#0864a1'
         },
     },
     typography:{

@@ -68,7 +68,7 @@ export const Navbar = () => {
       <Container maxWidth="xl" sx={{fontFamily:'monospace',color:'primary'}}>
         <Toolbar disableGutters>
           {/* <AdbIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} /> */}
-          <Avatar sx={{ display: { xs: 'none', md: 'flex' }, mr: 1}} src="../assets/qatar_logo_fifa.jpg" variant='rounded' />
+          <Avatar sx={{ display: { xs: 'none', md: 'flex' }, mr: 1}} src="../assets/icono.jpeg" variant='rounded' />
           <Typography
             variant="h6"
             noWrap

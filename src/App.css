@@ -34,12 +34,12 @@ body{
 
 /*PARA EDITAR MATERIAL UI*/
 .MuiDataGrid-columnHeader{
-  background-color: #0e376d !important;
+  background-color: #0864a1 !important;
   color: whitesmoke;
 }
 
 .MuiDataGrid-cell{
-  color: #0e376d;
+  color: #0864a1;
 }
 
 .MuiDataGrid-footerContainer .MuiSvgIcon-root{
@@ -47,7 +47,7 @@ body{
 }
 
 .MuiDataGrid-footerContainer{
-  background-color: #0e376d;
+  background-color: #0864a1;
   color: whitesmoke;
 }
 
@@ -56,7 +56,7 @@ body{
 }
 
 legend span{
-  color: #0e376d;
+  color: #0864a1;
 }
 
 .MuiDataGrid-menuIcon .MuiSvgIcon-root{
@@ -71,7 +71,7 @@ legend span{
 /*para apex charts*/
 .apexcharts-tooltip {
   background: #444343;
-  color: #0e376d;
+  color: #0864a1;
 }
 
 

@@ -8,7 +8,6 @@ import utc from 'dayjs/plugin/utc';
 import timezone from 'dayjs/plugin/timezone';
 import { DateTimePicker, renderTimeViewClock } from "@mui/x-date-pickers";
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import alasql from "alasql";
 import { useEffect } from "react";
 import { useState } from "react"
 // import {  } from "../context/SupabaseContext";
@@ -18,7 +17,6 @@ import { useNavigate } from "react-router-dom";
 import { useSupa } from "../context/SupabaseContext";
 import { esES } from "@mui/x-data-grid/locales";
 
-let equiposAll = [];
 let apuestasAll = [];
 
 dayjs.extend(utc);
@@ -119,25 +117,25 @@ export const Admin = () => {
   const puntarBet= async (data) =>{
     console.log('puntuarBet',data,equipos);
     console.log(apuestasAll);
-    const apuestas = apuestasAll.filter(f=>f.id_partido === data.id_partido);
+    const estasApuestas = apuestasAll.filter(f=>f.id_partido === data.id_partido);
     const factorA = (Number(equipos.filter(f=>f.nombre === data.equipoa)[0]?.nivel.replace('$','')) / 100)+1//id_partido;
     const factorB = (Number(equipos.filter(f=>f.nombre === data.equipob)[0]?.nivel.replace('$','')) / 100)+1;
-    console.log('rev',apuestas,factorA,factorB);
-    apuestas.map(e=>{
+    console.log('rev',estasApuestas,factorA,factorB,data);
+    estasApuestas.map(e=>{
       let puntaje = 0
       if(data.scorea === e.scorea) puntaje+=1;
       if(data.scoreb === e.scoreb) puntaje+=1;
       if(data.scorea === e.scorea && data.scoreb === e.scoreb) puntaje+=1;
-      if(data.scorea > data.scoreb && e.scorea > e.scoreb) puntaje += (1*factorA)
-      if(data.scorea < data.scoreb && e.scorea < e.scoreb) puntaje += (1*factorB)
-      if(data.scorea === data.scoreb && e.scorea === e.scoreb) puntaje += 2
+      if(data.scorea > data.scoreb && e.beta > e.betb) puntaje += (1*factorA)
+      if(data.scorea < data.scoreb && e.beta < e.betb) puntaje += (1*factorB)
+      if(data.scorea === e.beta && e.scoreb === e.betb) puntaje += 2
       //TODO: agregar la valoracion del factor de equipo y el tiempo antes del partido
       e.puntaje = puntaje;
       // console.log('laApuesta',e);
       return e;
     });
 
-    apuestas.forEach(async (e) => {
+    estasApuestas.forEach(async (e) => {
       try {
         const formed = {
           id_apuesta:e.id_apuesta,
@@ -150,34 +148,6 @@ export const Admin = () => {
       }
     });
   }
-
-  // const puntuarApuestasOK = async (data) =>{
-  //   const apuestas = apuestasAll.filter(f=>f.id_partido === data.id_partido);
-  //   const factorA = (equipos.filter(f=>f.nombre === data.equipoa)[0]?.nivel / 100)+1//id_partido;
-  //   const factorB = (equipos.filter(f=>f.nombre === data.equipob)[0]?.nivel / 100)+1;
-  //   apuestas.map(e=>{
-  //     let puntaje = 0
-  //     if(data.scorea === e.scorea) puntaje+=1;
-  //     if(data.scoreb === e.scoreb) puntaje+=1;
-  //     if(data.scorea === e.scorea && data.scoreb === e.scoreb) puntaje+=1;
-  //     if(data.scorea > data.scoreb && e.scorea > e.scoreb) puntaje += (2*factorA)
-  //     if(data.scorea < data.scoreb && e.scorea < e.scoreb) puntaje += (2*factorB)
-  //     if(data.scorea === data.scoreb && e.scorea === e.scoreb) puntaje += 2
-  //     //TODO: agregar la valoracion del factor de equipo y el tiempo antes del partido
-  //     e.puntaje = puntaje;
-  //     // console.log('laApuesta',e);
-  //     return e;
-  //   });
-
-  //   apuestas.forEach(async (e) => {
-  //     try {
-  //       await updateReg('apuesta',e)
-  //       // console.log('apuesta actualizada',e.id);
-  //     } catch (error) {
-  //       console.log(error);
-  //     }
-  //   });
-  // }
 
   const listarApuestas = async () =>{
     setOpenSpinner(true);
@@ -368,7 +338,7 @@ export const Admin = () => {
         </Box>
         <Button type="submit" fullWidth variant="contained" sx={{ mt: 3}}>Registrar</Button>
       </Box>
-      <Box sx={{ height:{xs:350,md:700}, width:{xs:'100vw',md:1000},justifyContent:'center',mt:2,paddingX:0.5}}>
+      <Box sx={{ height:{xs:350,md:600}, width:{xs:'100vw',md:1000},justifyContent:'center',mt:2,paddingX:0.5}}>
         <Typography variant="h5" color='primary' sx={{fontWeight:500,backgroundColor:'secondary.main',borderRadius:2,pl:4,mb:1}}>Actualización de Resultados</Typography>
         <DataGrid
           getRowId={(row) => row.id_partido}
@@ -377,7 +347,7 @@ export const Admin = () => {
           pageSize={10}
           density="compact"
           initialState={{
-            pagination: { paginationModel: { pageSize: 5 } },
+            pagination: { paginationModel: { pageSize: 10 } },
           }}
           pageSizeOptions={[5,10,25]}
           disableSelectionOnClick

@@ -117,7 +117,7 @@ export const Rank = () => {
             localeText={esES.components.MuiDataGrid.defaultProps.localeText}
             sx={{fontSize:16,mb:1}}
           />
-          <Button color="secondary" sx={{color:'#56042c'}} variant="contained" fullWidth onClick={onChangeChart} endIcon={<BarChartIcon/> }>Ranking General</Button>
+          <Button color="secondary" sx={{color:'whitesmoke'}} variant="contained" fullWidth onClick={onChangeChart} endIcon={<BarChartIcon/> }>Ranking General</Button>
         </Box>
         <Box component="div" sx={{alignItems:'center',width:{xs:'100vw',md:900},height:{xs:450,md:800},mt:1,pt:{xs:8,md:2}}}>
           {(apostadores.length>0 && !historial) && <Barras data={dataChart}></Barras>}

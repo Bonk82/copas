@@ -10,14 +10,12 @@ import { esES } from "@mui/x-data-grid/locales";
 
 let apuestasAll = [];
 let partidosAll = [];
-let usuariosAll = [];
 
 export const Bet = () => {
   const { loading,usuario,createReg,partidos,apuestas,getReg,updateReg } = useSupa();
   const [losPartidos, setLosPartidos] = useState([])
   const [lasApuestas, setLasApuestas] = useState([]);
   const [alerta, setAlerta] = useState([false,'success','']);
-  const [openSpinner, setOpenSpinner] = useState(false);
   const [grilla, setGrilla] = useState({mostrar:false,filas:[],columnas:[],tipo:''});
 
   useEffect(() => {
@@ -44,7 +42,6 @@ export const Bet = () => {
       setAlerta([true,'error','Ya no se permiten apuestas para este Parido!']);
       return true;
     }
-    setOpenSpinner(true);
     try {
       const nuevoObj  = {scorea:Number(e.beta),scoreb:Number(e.betb),fid_partido:e.id_partido,usuario_apuesta:usuario.id}
       if(e.id_apuesta){
@@ -61,8 +58,6 @@ export const Bet = () => {
       }
     } catch (error) {
       setAlerta([true,'danger','No se pudo registrar tu apuesta'])
-    } finally{
-      setOpenSpinner(false);
     }
   }
 
@@ -162,10 +157,8 @@ export const Bet = () => {
 
   const cargarGrilla = async (tipo)=>{
     // console.log(tipo);
-    setOpenSpinner(true);
     if(grilla.tipo === tipo){
       setGrilla({mostrar:false,filas:[],columnas:[],tipo:'',orden:{}})
-      setOpenSpinner(false);
     }else{
       let columnas =[];
       let filas =[];
@@ -174,6 +167,7 @@ export const Bet = () => {
         columnas = colApuestas;
       }
       if(tipo==='Historial Personal'){
+        // console.log('pinches partidos',losPartidos);
         filas = losPartidos; 
         columnas = colPartidos;
       }
@@ -210,7 +204,6 @@ export const Bet = () => {
         ]
       }
       setGrilla({mostrar:true,filas,columnas,tipo})
-      setOpenSpinner(false);
     }
   }
 
@@ -218,7 +211,6 @@ export const Bet = () => {
 
   return (
     <>
-      {/* <Navbar/> */}
       <Box component='main' sx={{backgroundColor:'whitesmoke',width:'100vw'}} >
         <Box sx={{display: 'flex',flexDirection: 'column',justifyContent:'center', alignItems: 'center','& > *': {m: 1, }}}>
           <ToggleButtonGroup size="large" value={grilla.tipo} color="primary" sx={{fontWeight:'bold'}} aria-label="Platform" exclusive >
@@ -230,7 +222,7 @@ export const Bet = () => {
             <Typography variant="h5" sx={{fontWeight:500,backgroundColor:'secondary.main',color:'persist.main',borderRadius:2,pl:4,mb:1}} >{grilla.tipo}</Typography>
             <DataGrid
               rows={grilla.filas}
-              getRowId={(row) => row.id_apuesta || row.id_partido}
+              getRowId={(row) => grilla.tipo == 'Apostar' ? row.id_partido : row.id_apuesta}
               columns={grilla.columnas}
               density="compact"
               initialState={{
