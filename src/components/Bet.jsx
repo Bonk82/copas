@@ -98,7 +98,7 @@ export const Bet = () => {
       renderCell:(params)=>{ return <Typography variant="h4" style={{display:'grid',placeItems:'center',marginTop:'0.5rem'}}>{params.row.puntaje}</Typography>}
     },
     {field:'fid_equipoa',headerName:'Equipo', minWidth:90, flex:1, align:'center'
-    , renderCell: (params) =><figure style={{alignItems:'center',margin:1,display:'flex',justifyContent:'space-between'}}>
+    , renderCell: (params) =><figure style={{alignItems:'center',margin:1,display:'flex',justifyContent:'flex-start'}}>
       <img title={`${params.row.equipoa}`} width='50' src={`../assets/${params.row.codigoa}.png`} alt='X'/>
       <figcaption >{`${params.row.equipoa}`} : {`${params.row.scorea}`}</figcaption>
     </figure>},
@@ -109,7 +109,7 @@ export const Bet = () => {
       renderCell:(params)=>{ return <Typography variant="h4" style={{display:'grid',placeItems:'center',marginTop:'0.5rem'}}>{params.row.betb}</Typography>}
     },
     {field:'fid_equipob',headerName:'Equipo', minWidth:90, flex:1, align:'center'
-    , renderCell: (params) =><figure style={{alignItems:'center',margin:1,display:'flex',justifyContent:'space-between'}}>
+    , renderCell: (params) =><figure style={{alignItems:'center',margin:1,display:'flex',justifyContent:'flex-start'}}>
       <img title={`${params.row.equipob}`} width='50' src={`../assets/${params.row.codigob}.png`} alt='X'/>
       <figcaption >{`${params.row.equipob}`} : {`${params.row.scoreb}`}</figcaption>
     </figure>},
@@ -125,7 +125,7 @@ export const Bet = () => {
       },
     },
     {field:'fid_equipoa',headerName:'Equipo', minWidth:90, flex:1, align:'center'
-    , renderCell: (params) =><figure style={{alignItems:'center',margin:1,display:'flex',justifyContent:'space-between'}}>
+    , renderCell: (params) =><figure style={{alignItems:'center',margin:1,display:'flex',justifyContent:'flex-start'}}>
       <img title={`${params.row.equipoa}`} width='50' src={`../assets/${params.row.codigoa}.png`} alt='X'/>
       <figcaption>{`${params.row.equipoa}`}</figcaption>
     </figure>},
@@ -136,7 +136,7 @@ export const Bet = () => {
       renderCell:(params)=>{ return <Typography variant="h4" style={{display:'grid',placeItems:'center'}}>{params.row.betb}</Typography>}
     },
     {field:'fid_equipob',headerName:'Equipo', minWidth:90, flex:1, align:'center', 
-    renderCell: (params) =><figure style={{alignItems:'center',margin:1,display:'flex',justifyContent:'space-between'}}>
+    renderCell: (params) =><figure style={{alignItems:'center',margin:1,display:'flex',justifyContent:'flex-start'}}>
       <img title={`${params.row.equipob}`} width='50' src={`../assets/${params.row.codigob}.png`} alt='X'/>
       <figcaption>{`${params.row.equipob}`}</figcaption>
     </figure>},
@@ -184,15 +184,16 @@ export const Bet = () => {
         // from ? a inner join ? p on a.partidoID = p.id inner join ? u on a.uid = u.userID
         // where u.grupo = '${usuario.grupo}' order by p.fecha.toDate(), u.nombre`,[apuestasAll,partidosAll,usuariosAll]);
         console.log('en grupo apuestas',apuestas);
-        filas = apuestas.filter(f=>dayjs(f.fecha).toDate() < dayjs().toDate());
+        // filas = apuestas.filter(f=>dayjs(f.fecha).toDate() < dayjs().toDate());
+        filas = apuestas
         // filas = await filas.sort((a,b)=>b.fecha - a.fecha)
 
         columnas = [
-          {field:'nombre',headerName:'Usuario', minWidth:120,flex:1},
-          {field:'fid_equipoa',headerName:'Equipo', minWidth:90, flex:1, align:'center'
-          , renderCell: (params) =><figure style={{alignItems:'center',margin:1,display:'flex',justifyContent:'space-between'}}>
-            <img title={`${params.row.fid_equipoa}`} width='50' src={`../assets/${params.row.fid_equipoa}.png`} alt='X'/>
-            <figcaption>{`${params.row.fid_equipoa}`}</figcaption>
+          {field:'email',headerName:'Usuario', minWidth:120,flex:1},
+          {field:'equipoa',headerName:'Equipo', minWidth:90, flex:1, align:'center'
+          , renderCell: (params) =><figure style={{alignItems:'center',margin:1,display:'flex',justifyContent:'flex-start'}}>
+            <img title={`${params.row.equipoa}`} width='50' src={`../assets/${params.row.codigoa}.png`} alt='X'/>
+            <figcaption>{`${params.row.equipoa}`}</figcaption>
           </figure>},
           {field:'beta',headerName:'Goles',editable:false, minWidth:40,flex:1,align:'center', renderCell:(params)=>{
             return <Typography variant="h4" style={{display:'grid',placeItems:'center'}}>{params.row.beta}</Typography>
@@ -200,12 +201,12 @@ export const Bet = () => {
           {field:'betb',headerName:'Goles',editable:false, minWidth:40,flex:1, renderCell:(params)=>{
             return <Typography variant="h4" style={{display:'grid',placeItems:'center'}}>{params.row.betb}</Typography>
           }},
-          {field:'fid_equipob',headerName:'Equipo', minWidth:90, flex:1, align:'center'
-          , renderCell: (params) =><figure style={{alignItems:'center',margin:1,display:'flex',justifyContent:'space-between'}}>
-            <img title={`${params.row.fid_equipob}`} width='50' src={`../assets/${params.row.fid_equipob}.png`} alt='X'/>
-            <figcaption>{`${params.row.fid_equipob}`}</figcaption>
+          {field:'equipob',headerName:'Equipo', minWidth:90, flex:1, align:'center'
+          , renderCell: (params) =><figure style={{alignItems:'center',margin:1,display:'flex',justifyContent:'flex-start'}}>
+            <img title={`${params.row.equipob}`} width='50' src={`../assets/${params.row.codigob}.png`} alt='X'/>
+            <figcaption>{`${params.row.equipob}`}</figcaption>
           </figure>},
-          {field:'id',headerName:'ID'}
+          {field:'id_apuesta',headerName:'ID'}
         ]
       }
       setGrilla({mostrar:true,filas,columnas,tipo})
@@ -229,7 +230,7 @@ export const Bet = () => {
             <Typography variant="h5" sx={{fontWeight:500,backgroundColor:'secondary.main',color:'persist.main',borderRadius:2,pl:4,mb:1}} >{grilla.tipo}</Typography>
             <DataGrid
               rows={grilla.filas}
-              getRowId={(row) => row.id_partido}
+              getRowId={(row) => row.id_apuesta || row.id_partido}
               columns={grilla.columnas}
               density="compact"
               initialState={{

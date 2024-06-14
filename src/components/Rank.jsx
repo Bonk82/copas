@@ -16,7 +16,7 @@ import { esES } from "@mui/x-data-grid/locales"
 let historialAll = [];
 
 export const Rank = () => {
-  const { loading,usuario,createReg,parametricas,pedidos,pedidosDetalle,clientes,productos,getReg,getRegFilter,updateReg,deleteReg } = useSupa();
+  const { loading,usuario,apuestas,getReg } = useSupa();
   const [apostadores, setApostadores] = useState([]);
   const [dataChart, setDataChart] = useState({x:[],y:[],titulos:{},naame:''})
   const [dataChartLine, setDataChartLine] = useState({x:[],y:[],titulos:{},naame:''})
@@ -30,17 +30,15 @@ export const Rank = () => {
   
   const cargarApostadores = async()=>{
     setOpenSpinner(true);
-    const apuestas = await getReg('apuesta');
-    const usuarios = await getReg('usuario');
-    const partidos = await getReg('partido');
-    historialAll = alasql(`select a.scorea betA,a.scoreb betB, a.uid id,a.puntos,u.nombre,u.estado,p.equipoA,p.equipoB
-    ,p.fechaPartido.toDate() fechaPartido,p.scorea,p.scoreb from ? u inner join ? a on u.userID =  a.uid
-    inner join ? p on p.id = a.partidoID where u.estado = 'apuesta' and u.grupo = '${usuario.grupo}'`,[usuarios,apuestas,partidos]);
+    const lasApuestas = apuestas.length>0 ? apuestas : await getReg('vw_apuesta','id_apuesta',false);
+    // const usuarios = await getReg('usuario');
+    // const partidos = await getReg('partido');
+    // historialAll = alasql(`select a.scorea betA,a.scoreb betB, a.uid id,a.puntos,u.nombre,u.estado,p.equipoA,p.equipoB
+    // ,p.fechaPartido.toDate() fechaPartido,p.scorea,p.scoreb from ? u inner join ? a on u.userID =  a.uid
+    // inner join ? p on p.id = a.partidoID where u.estado = 'apuesta' and u.grupo = '${usuario.grupo}'`,[usuarios,apuestas,partidos]);
 
-    const apostadoresAll = await alasql('SELECT nombre,id,SUM(puntos)puntos from ? GROUP BY nombre,id order by 3 desc',[historialAll]);
-    // const rr = alasql('SELECT nombre,id,SUM(puntos)puntos from ? GROUP BY nombre,id',[historialAll]);
-    //console.log('apostadores',apostadoresAll,historialAll,apuestas,usuarios,partidos,rr);
-    // console.log('ver',apostadoresAll);
+    const apostadoresAll = await alasql('SELECT email,usuario_apuesta,coalesce(SUM(puntaje),0)puntos from ? GROUP BY email,usuario_apuesta order by 3 desc',[lasApuestas]);
+    console.log('los apostadores',apostadoresAll,lasApuestas);
     setApostadores(apostadoresAll);
     cargarDataChart(apostadoresAll)
   }
@@ -49,7 +47,7 @@ export const Rank = () => {
     setOpenSpinner(true);
     // console.log(row);
     // const misApuestas = historialAll.filter(f=>f.id === row.id)
-    const historialUsuario = await alasql(`select CONVERT(STRING,DATE(fechaPartido),112) fechaPartido,sum(puntos) puntos from ? where id='${row.id}' group by CONVERT(STRING,DATE(fechaPartido),112) order by [fechaPartido]`,[historialAll]) //historialAll.filter(f=>f.id === row.id)
+    const historialUsuario = await alasql(`select CONVERT(STRING,DATE(fecha),112) fechaPartido,sum(puntaje) puntos from ? where usuario_apuesta='${row.usuario_apuesta}' group by CONVERT(STRING,DATE(fecha),112) order by [fecha]`,[apuestas]) //historialAll.filter(f=>f.id === row.id)
     // console.log('flag',historialUsuario,apostadores,misApuestas);
     let pts =[];
     let fechas = [];
@@ -60,20 +58,20 @@ export const Rank = () => {
       pts.push(a.puntos || 0);
       fechas.push(dayjs(a.fechaPartido).format('DD/MMM'));
     });
-    setDataChartLine({x:fechas,y:pts,titulos:{x:'Fechas',y:'Puntos Obtenidos',c:'Historial Personal - '+ row.nombre},name:row.nombre})
+    setDataChartLine({x:fechas,y:pts,titulos:{x:'Fechas',y:'Puntos Obtenidos',c:'Historial Personal - '+ row.email},name:row.email})
     setHistorial(true);
     setOpenSpinner(false);
   }
 
   const colApostadores = [
-    {field:'nombre',headerName:'Nombre', minWidth: 150,flex:1},
+    {field:'email',headerName:'Nombre', minWidth: 150,flex:1},
     {field:'puntos',headerName:'Puntos', minWidth: 80,flex:1,type:'number'},
     {field: 'Acciones', headerName: 'Historial', sortable: false, minWidth: 80,flex:1,
     renderCell: (params) => {
       return <IconButton onClick={()=>cargarHistorial(params.row)} title='Historial Apuestas' color='success'><MoneyIcon fontSize="large"/></IconButton>;
       },
     },
-    {field:'id',headerName:'ID', width: 80},
+    {field:'usuario_apuesta',headerName:'ID', width: 80},
   ]
 
   const cargarDataChart = (data)=>{
@@ -83,10 +81,10 @@ export const Rank = () => {
     
     data.forEach(d => {
       // console.log('bets',d);
-      users.push(d.nombre);
-      pts.push(Number(d.puntos.toFixed(2)));
+      users.push(d.email);
+      pts.push(Number((d.puntos)).toFixed(2));
     });
-    setDataChart({x:users,y:pts,titulos:{x:'Participantes',y:'Puntos Obtenidos',c:'Ranking de Apostadores'},name:''})
+    setDataChart({x:users,y:pts,titulos:{x:'Participantes',y:'Puntos Obtenidos',c:'Ranking de Apostadores'},nombre:''})
     setOpenSpinner(false);
   }
 
@@ -99,17 +97,22 @@ export const Rank = () => {
   return (
     <>
       {/* <Navbar/> */}
-      <Box component='main' sx={{backgroundColor:'whitesmoke',minHeight:'100vh',width:'100vw',display:'flex',flexDirection:{xs:'column',md:'row'},justifyContent:'center',gap:2}} >
-        <Box sx={{ height:{xs:400, md:550}, width:{xs:'100vw',md:400},justifyContent:'center',mt:1,paddingX:{xs:0.5,md:4} }}>
+      <Box component='main' sx={{backgroundColor:'whitesmoke',minHeight:'100vh',width:'100vw',display:'flex',flexDirection:{xs:'column',md:'row'},justifyContent:'center',gap:1}} >
+        <Box sx={{ height:{xs:400, md:550}, width:{xs:'100vw',md:450},justifyContent:'center',mt:1,paddingX:{xs:0.5,md:4} }}>
           <Typography variant="h5" color='persist.main' sx={{fontWeight:500,backgroundColor:'secondary.main',borderRadius:2,pl:4,mb:1}} >Ranking</Typography>
           <DataGrid
             rows={apostadores}
+            getRowId={(row) => row.usuario_apuesta}
             columns={colApostadores}
             pageSize={10}
-            rowsPerPageOptions={[10]}
+            density="compact"
+            initialState={{
+              pagination: { paginationModel: { pageSize: 5 } },
+            }}
+            pageSizeOptions={[5,10,25]}
             disableSelectionOnClick
             experimentalFeatures={{ newEditingApi: true }}
-            columnVisibilityModel={{id:false}}
+            columnVisibilityModel={{usuario_apuesta:false}}
             // sortModel={[{field:'fechaPartido'}]}
             localeText={esES.components.MuiDataGrid.defaultProps.localeText}
             sx={{fontSize:16,mb:1}}

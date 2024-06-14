@@ -36,39 +36,39 @@ export const Info = () => {
       let filas =[];
       let resultados = [];
       if(tipo==='resultados'){
-        resultados = await getReg('partido','fecha',false);
+        resultados = await getReg('vw_partido','fecha',false);
         resultados.map(e=>{
           e.fechaPartidoStr = dayjs(e.fecha).format('DD/MMM HH:mm');
           return e
         })
         // filas = resultados.filter(f=>f.finalizado)
         //                   .sort((a,b)=>new Date(a.fechaPartido).getTime() - new Date(b.fechaPartido).getTime());
-        filas = alasql('select * from ? where finalizado = true order by fechaPartido',[resultados])
+        filas = alasql('select * from ? where finalizado = true order by fecha',[resultados])
         columnas = [
           {field:'fechaPartidoStr',headerName:'Fecha', minWidth:100,flex:1},
-          {field:'equipoA',headerName:'Equipo', minWidth:90, flex:0.5, align:'center'
-          , renderCell: (params) =><figure>
-            <img title={`${params.row.equipoA}`} width='70' src={`../assets/${params.row.equipoA}.png`} alt='X'/>
-            <figcaption>{`${params.row.equipoA}`}</figcaption>
+          {field:'equipoa',headerName:'Equipo', minWidth:90, flex:0.5, align:'center'
+          , renderCell: (params) =><figure style={{alignItems:'center',margin:1,display:'flex',justifyContent:'flex-start'}}>
+            <img title={`${params.row.equipoa}`} width='50' src={`../assets/${params.row.codigoa}.png`} alt='X'/>
+            <figcaption>{`${params.row.equipoa}`}</figcaption>
           </figure>},
           {field:'scorea',headerName:'Goles', minWidth:50,flex:1 ,type:'number'},
-          {field:'equipoB',headerName:'Equipo',minWidth:90, flex:0.5, align:'center'
-          , renderCell: (params) => <figure>
-            <img title={`${params.row.equipoB}`} width='70' src={`../assets/${params.row.equipoB}.png`} alt='X'/>
-            <figcaption>{`${params.row.equipoB}`}</figcaption>
+          {field:'equipob',headerName:'Equipo',minWidth:90, flex:0.5, align:'center'
+          , renderCell: (params) => <figure style={{alignItems:'center',margin:1,display:'flex',justifyContent:'flex-start'}}>
+            <img title={`${params.row.equipob}`} width='50' src={`../assets/${params.row.codigob}.png`} alt='X'/>
+            <figcaption>{`${params.row.equipob}`}</figcaption>
           </figure>},
           {field:'scoreb',headerName:'Goles', minWidth:50,flex:1 ,type:'number'},
         ] ;
       }
       if(tipo==='posiciones'){
-        resultados = await getReg('equipo');
+        resultados = await getReg('equipo','nombre',false);
         filas = alasql('select * from ? order by grupo,puntos desc,diferencia desc',[resultados])
         // console.log(filas);
         columnas = [
           {field:'grupo',headerName:'Grupo', minWidth:50,flex:1},
           {field:'nombre',headerName:'Equipo', minWidth:90, flex:1, align:'center'
-          , renderCell: (params) =><figure>
-            <img title={`${params.row.nombre}`} width='70' src={`../assets/${params.row.nombre}.png`} alt='X'/>
+          , renderCell: (params) =><figure style={{alignItems:'center',margin:1,display:'flex',justifyContent:'flex-start'}}>
+            <img title={`${params.row.nombre}`} width='50' src={`../assets/${params.row.codigo}.png`} alt='X'/>
             <figcaption>{`${params.row.nombre}`}</figcaption>
           </figure>},
           {field:'jugados',headerName:'PJ',  minWidth:50,flex:1,type:'number'},
@@ -82,15 +82,18 @@ export const Info = () => {
         ] ;
       }
       if(tipo==='dinamico'){
-        resultados = await getReg('equipo');
-        filas = resultados;
+        resultados = await getReg('equipo','nombre',false);
+        filas = resultados.map(e=>{
+          e.nivel = e.nivel.replace('$','')/100;
+          return e
+        });
         columnas = [
           {field:'nombre',headerName:'Equipo', minWidth:110, flex:1, align:'center'
-          , renderCell: (params) =><figure>
-            <img title={`${params.row.nombre}`} width='70' src={`../assets/${params.row.nombre}.png`} alt='X'/>
+          , renderCell: (params) =><figure style={{alignItems:'center',margin:1,display:'flex',justifyContent:'flex-start'}}>
+            <img title={`${params.row.nombre}`} width='50' src={`../assets/${params.row.codigo}.png`} alt='X'/>
             <figcaption>{`${params.row.nombre}`}</figcaption>
           </figure>},
-          {field:'factor',headerName:'Factor', width: 100},
+          {field:'nivel',headerName:'Factor', width: 100},
         ] ;
       }
       setGrilla({mostrar:true,filas,columnas,tipo})
@@ -116,12 +119,17 @@ export const Info = () => {
           <Box sx={{width:{xs:'100%',md:'80%'},height: '85vh'}} >
           <DataGrid
               rows={grilla.filas}
+              getRowId={(row) => row.id_partido || row.id_equipo}
               columns={grilla.columnas}
               pageSize={10}
-              rowsPerPageOptions={[10]}
+              density="compact"
+              initialState={{
+                pagination: { paginationModel: { pageSize: 5 } },
+              }}
+              pageSizeOptions={[5,10,25]}
               disableSelectionOnClick
               autoHeight
-              rowHeight={80}
+              rowHeight={70}
               experimentalFeatures={{ newEditingApi: true }}
               localeText={esES.components.MuiDataGrid.defaultProps.localeText}
               // sortModel={grilla.orden}

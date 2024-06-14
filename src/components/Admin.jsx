@@ -56,6 +56,7 @@ export const Admin = () => {
     // } 
     if(equipos.length==0) cargarEquipos();
     if(partidos.length==0) listarPartidos();
+    listarApuestas();
 
     // listarPartidos();
     // listarApuestas();
@@ -69,7 +70,7 @@ export const Admin = () => {
       const nuevoObj  = {scorea:Number(e.scorea),scoreb:Number(e.scoreb),finalizado:true,id_partido:e.id_partido}
       await updateReg('partido',nuevoObj);
       await actualizarPuntuacion(e);
-      await puntuarApuestas(e);
+      puntarBet(e)
       // console.log('ya se actualizo');
     } catch (error) {
       setAlerta([true,'danger','Error al actualizar marcador'])
@@ -81,12 +82,12 @@ export const Admin = () => {
   }
 
   const actualizarPuntuacion = async (data) =>{
-    // console.log(data);
+    console.log('actualizarPuntuacion',data);
     let ptsA=0;
     if(data.scorea > data.scoreb) ptsA=3;
     if(data.scorea === data.scoreb) ptsA=1;
     //para equipo A
-    let elEquipo = equiposAll.filter(f=>f.nombre === data.equipoA)[0];
+    let elEquipo = equipos.filter(f=>f.nombre === data.equipoa)[0];
     let equipoAct = {
       jugados : parseInt(elEquipo.jugados || 0)+1,
       ganados : parseInt(elEquipo.ganados || 0) + ptsA===3?1:0,
@@ -95,11 +96,12 @@ export const Admin = () => {
       favor : parseInt(elEquipo.favor || 0) + data.scorea,
       contra : parseInt(elEquipo.contra || 0) + data.scoreb,
       diferencia : parseInt(elEquipo.diferencia || 0) + (data.scorea - data.scoreb),
-      puntos : parseInt(elEquipo.puntos || 0) + ptsA,      
+      puntos : parseInt(elEquipo.puntos || 0) + ptsA, 
+      id_equipo:elEquipo.id_equipo,     
     }
-    await updateReg('equipo',elEquipo.id,equipoAct);
+    await updateReg('equipo',equipoAct);
     //para equipo B
-    elEquipo = equiposAll.filter(f=>f.nombre === data.equipoB)[0];
+    elEquipo = equipos.filter(f=>f.nombre === data.equipob)[0];
     equipoAct = {
       jugados : parseInt(elEquipo.jugados || 0)+1,
       ganados : parseInt(elEquipo.ganados || 0) + ptsA===0?1:0,
@@ -108,33 +110,40 @@ export const Admin = () => {
       favor : parseInt(elEquipo.favor || 0) + data.scoreb,
       contra : parseInt(elEquipo.contra || 0) + data.scorea,
       diferencia : parseInt(elEquipo.diferencia || 0) + (data.scoreb - data.scorea),
-      puntos : parseInt(elEquipo.puntos || 0) + (ptsA===0?3:ptsA===3?0:1),      
+      puntos : parseInt(elEquipo.puntos || 0) + (ptsA===0?3:ptsA===3?0:1), 
+      id_equipo:elEquipo.id_equipo,     
     }
-    await updateReg('equipo',elEquipo.id,equipoAct);
+    await updateReg('equipo',equipoAct);
   }
 
-  const puntuarApuestas = async (data) =>{
-    const apuestas = apuestasAll.filter(f=>f.partidoID === data.id);
-    // console.log('las apuestas',apuestas,apuestasAll);
-    const factorA = equiposAll.filter(f=>f.nombre === data.equipoA)[0]?.factor;
-    const factorB = equiposAll.filter(f=>f.nombre === data.equipoB)[0]?.factor;
+  const puntarBet= async (data) =>{
+    console.log('puntuarBet',data,equipos);
+    console.log(apuestasAll);
+    const apuestas = apuestasAll.filter(f=>f.id_partido === data.id_partido);
+    const factorA = (Number(equipos.filter(f=>f.nombre === data.equipoa)[0]?.nivel.replace('$','')) / 100)+1//id_partido;
+    const factorB = (Number(equipos.filter(f=>f.nombre === data.equipob)[0]?.nivel.replace('$','')) / 100)+1;
+    console.log('rev',apuestas,factorA,factorB);
     apuestas.map(e=>{
       let puntaje = 0
       if(data.scorea === e.scorea) puntaje+=1;
       if(data.scoreb === e.scoreb) puntaje+=1;
       if(data.scorea === e.scorea && data.scoreb === e.scoreb) puntaje+=1;
-      if(data.scorea > data.scoreb && e.scorea > e.scoreb) puntaje += (2*factorA)
-      if(data.scorea < data.scoreb && e.scorea < e.scoreb) puntaje += (2*factorB)
+      if(data.scorea > data.scoreb && e.scorea > e.scoreb) puntaje += (1*factorA)
+      if(data.scorea < data.scoreb && e.scorea < e.scoreb) puntaje += (1*factorB)
       if(data.scorea === data.scoreb && e.scorea === e.scoreb) puntaje += 2
       //TODO: agregar la valoracion del factor de equipo y el tiempo antes del partido
-      e.puntos = puntaje;
+      e.puntaje = puntaje;
       // console.log('laApuesta',e);
       return e;
     });
 
     apuestas.forEach(async (e) => {
       try {
-        await updateReg('apuesta',e.id,{puntos:e.puntos})
+        const formed = {
+          id_apuesta:e.id_apuesta,
+          puntaje:e.puntaje
+        }
+        await updateReg('apuesta',formed)
         // console.log('apuesta actualizada',e.id);
       } catch (error) {
         console.log(error);
@@ -142,37 +151,65 @@ export const Admin = () => {
     });
   }
 
+  // const puntuarApuestasOK = async (data) =>{
+  //   const apuestas = apuestasAll.filter(f=>f.id_partido === data.id_partido);
+  //   const factorA = (equipos.filter(f=>f.nombre === data.equipoa)[0]?.nivel / 100)+1//id_partido;
+  //   const factorB = (equipos.filter(f=>f.nombre === data.equipob)[0]?.nivel / 100)+1;
+  //   apuestas.map(e=>{
+  //     let puntaje = 0
+  //     if(data.scorea === e.scorea) puntaje+=1;
+  //     if(data.scoreb === e.scoreb) puntaje+=1;
+  //     if(data.scorea === e.scorea && data.scoreb === e.scoreb) puntaje+=1;
+  //     if(data.scorea > data.scoreb && e.scorea > e.scoreb) puntaje += (2*factorA)
+  //     if(data.scorea < data.scoreb && e.scorea < e.scoreb) puntaje += (2*factorB)
+  //     if(data.scorea === data.scoreb && e.scorea === e.scoreb) puntaje += 2
+  //     //TODO: agregar la valoracion del factor de equipo y el tiempo antes del partido
+  //     e.puntaje = puntaje;
+  //     // console.log('laApuesta',e);
+  //     return e;
+  //   });
+
+  //   apuestas.forEach(async (e) => {
+  //     try {
+  //       await updateReg('apuesta',e)
+  //       // console.log('apuesta actualizada',e.id);
+  //     } catch (error) {
+  //       console.log(error);
+  //     }
+  //   });
+  // }
+
   const listarApuestas = async () =>{
     setOpenSpinner(true);
-    apuestasAll = await getReg('apuesta');
+    apuestasAll = await getReg('vw_apuesta','id_apuesta',false);
     setOpenSpinner(false);
   }
 
   const colPartidos = [
-    {field: 'Acciones', headerName: 'Acciones', sortable: false, minWidth:50,flex:1,
+    {field: 'Acciones', headerName: 'Acciones', sortable: false, flex:1,minWidth:60,
       renderCell: (params) => {
         return <IconButton onClick={()=>onChangeScore(params.row)} title='Actualizar Score' color={params.row.finalizado? 'success':'warning'}>
                 {params.row.finalizado? <CheckCircleIcon fontSize="large"/>:<SaveAsIcon fontSize="large"/>} 
               </IconButton>;
       },
     },
-    {field:'torneo',headerName:'COPA', minWidth:50,flex:1,type:'text',align:'center', /*renderCell:(params)=>{
+    {field:'torneo',headerName:'COPA', minWidth:30,flex:1,type:'text',align:'center', /*renderCell:(params)=>{
       return <Typography variant="h6">{params.row.torneo}</Typography>
     }*/},
-    {field:'fid_equipoa',headerName:'Equipo', minWidth:90, flex:0.5, align:'center'
-    , renderCell: (params) =><figure style={{textAlign:'center'}}>
-      <img title={`${params.row.equipoa}`} width='70' src={`../assets/${params.row.codigoa}.png`} alt='X'/>
+    {field:'fid_equipoa',headerName:'Equipo', minWidth:130, flex:0.5, align:'center'
+    , renderCell: (params) =><figure style={{alignItems:'center',margin:1,display:'flex',justifyContent:'flex-start'}}>
+      <img title={`${params.row.equipoa}`} width='50' src={`../assets/${params.row.codigoa}.png`} alt='X'/>
       <figcaption>{`${params.row.equipoa}`}</figcaption>
     </figure>},
-    {field:'scorea',headerName:'Goles', minWidth:50,flex:1,editable:true,type:'number',min:0,max:9,align:'center', renderCell:(params)=>{
-      return <Typography variant="h4">{params.row.scorea}</Typography>
+    {field:'scorea',headerName:'Goles', minWidth:40,flex:1,editable:true,type:'number',min:0,max:9,align:'center', renderCell:(params)=>{
+      return <Typography variant="h4" style={{display:'grid',placeItems:'center'}}>{params.row.scorea}</Typography>
     }},
-    {field:'scoreb',headerName:'Goles', minWidth:50,flex:1,editable:true,type:'number',min:0,max:9,align:'center', renderCell:(params)=>{
-      return <Typography variant="h4">{params.row.scoreb}</Typography>
+    {field:'scoreb',headerName:'Goles', minWidth:40,flex:1,editable:true,type:'number',min:0,max:9,align:'center', renderCell:(params)=>{
+      return <Typography variant="h4" style={{display:'grid',placeItems:'center'}}>{params.row.scoreb}</Typography>
     }},
-    {field:'fid_equipob',headerName:'Equipo', minWidth:90, flex:0.5, align:'center'
-    , renderCell: (params) =><figure style={{textAlign:'center'}}>
-      <img title={`${params.row.equipob}`} width='70' src={`../assets/${params.row.equipob}.png`} alt='X'/>
+    {field:'fid_equipob',headerName:'Equipo', minWidth:130, flex:0.5, align:'center'
+    , renderCell: (params) =><figure style={{alignItems:'center',margin:1,display:'flex',justifyContent:'flex-start'}}>
+      <img title={`${params.row.equipob}`} width='50' src={`../assets/${params.row.codigob}.png`} alt='X'/>
       <figcaption>{`${params.row.equipob}`}</figcaption>
     </figure>},
     {field:'fechaPartidoStr',headerName:'Fecha Partido', minWidth:100,flex:1,editable:false},
