@@ -163,11 +163,13 @@ export const Bet = () => {
       let columnas =[];
       let filas =[];
       if(tipo==='Apostar'){
+        console.log('apostar filas',lasApuestas);
         filas = lasApuestas; 
         columnas = colApuestas;
       }
       if(tipo==='Historial Personal'){
         // console.log('pinches partidos',losPartidos);
+        console.log('Historial filas',losPartidos);
         filas = losPartidos; 
         columnas = colPartidos;
       }
@@ -221,8 +223,9 @@ export const Bet = () => {
           <Box sx={{ height:{xs:600,md:800}, display:'flex',justifyContent:'center',flexDirection:'column',paddingX:{xs:0.5,md:40} }}>
             <Typography variant="h5" sx={{fontWeight:500,backgroundColor:'secondary.main',color:'persist.main',borderRadius:2,pl:4,mb:1}} >{grilla.tipo}</Typography>
             <DataGrid
+              autoHeight
               rows={grilla.filas}
-              getRowId={(row) => grilla.tipo == 'Apostar' ? row.id_partido : row.id_apuesta}
+              getRowId={(row) =>  ['Apostar','Historial Personal'].includes(grilla.tipo) ? row.id_partido : row.id_apuesta}
               columns={grilla.columnas}
               density="compact"
               initialState={{

@@ -101,6 +101,7 @@ export const Rank = () => {
         <Box sx={{ height:{xs:400, md:550}, width:{xs:'100vw',md:450},justifyContent:'center',mt:1,paddingX:{xs:0.5,md:4} }}>
           <Typography variant="h5" color='persist.main' sx={{fontWeight:500,backgroundColor:'secondary.main',borderRadius:2,pl:4,mb:1}} >Ranking</Typography>
           <DataGrid
+            autoHeight
             rows={apostadores}
             getRowId={(row) => row.usuario_apuesta}
             columns={colApostadores}
