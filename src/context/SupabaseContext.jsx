@@ -113,7 +113,10 @@ export const SupabaseContextProvider = ({ children }) => {
     try {
       const pivotUser = await supabase.auth.getUser();
       console.log('ingresando',pivotUser);
-      if(!pivotUser.data.user)  navigate('/login')
+      if(!pivotUser.data.user){
+        navigate('/login')
+        return false;
+      } 
       pivotUser.data.user?.identities.forEach(e => {
         e.identity_data.picture ? setAvatar(e.identity_data.picture):'C'
         // console.log('entroEach',avatar);
