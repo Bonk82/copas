@@ -10,8 +10,7 @@ import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
-// import { useAuth } from '../context/AuthContext';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSupa } from '../context/SupabaseContext';
 
@@ -20,16 +19,6 @@ export const Navbar = () => {
   const { usuario,logout,avatar,pages } = useSupa();
   const [anchorElNav, setAnchorElNav] = useState(null);
   const [anchorElUser, setAnchorElUser] = useState(null);
-  // const [pages, setPages] = useState(['Fixture', 'Apuestas', 'Ranking'])
-
-  // useEffect(() => {
-  //   console.log('revisando',usuario);
-  //   if(usuario.role === 'admin'){
-  //     const pagesAdmin = ['Fixture', 'Apuestas', 'Ranking','Admin']
-  //     setPages(pagesAdmin)
-  //   }
-  // // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [])
   
 
   const navigate = useNavigate();
@@ -123,9 +112,7 @@ export const Navbar = () => {
               ))}
             </Menu>
           </Box>
-          {/* <AdbIcon sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} /> */}
-          {/* <img src="../assets/qatar_logo_fifa.jpg" alt="Qatar 2022"  height="50" width="80"  /> */}
-          <Avatar sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} src="../assets/qatar_logo_fifa.jpg" variant='rounded'/>
+          <Avatar sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} src="../assets/icono.jpeg.jpg" variant='rounded'/>
           <Typography
             variant="h5"
             noWrap

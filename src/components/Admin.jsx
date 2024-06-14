@@ -341,6 +341,7 @@ export const Admin = () => {
       <Box sx={{ height:{xs:350,md:600}, width:{xs:'100vw',md:1000},justifyContent:'center',mt:2,paddingX:0.5}}>
         <Typography variant="h5" color='primary' sx={{fontWeight:500,backgroundColor:'secondary.main',borderRadius:2,pl:4,mb:1}}>Actualización de Resultados</Typography>
         <DataGrid
+          autoHeight
           getRowId={(row) => row.id_partido}
           rows={partidos}
           columns={colPartidos}

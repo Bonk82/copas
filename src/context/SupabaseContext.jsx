@@ -88,8 +88,24 @@ export const SupabaseContextProvider = ({ children }) => {
     const { data, error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
     })
-    // console.log('login google',data,error);
-    // if(data) router.push('/dashboard')
+    if(data.user){
+      setUsuario(data.user)
+      navigate('/')
+    } 
+    if(error) throw new Error(error.message)
+  }
+
+  const simpleSignUp = async (email,password) =>{
+    let { data, error } = await supabase.auth.signUp({
+      email: email,
+      password: password
+    })
+    console.log('la data',data,error);
+    if(data.user){
+      setUsuario(data.user)
+      navigate('/')
+    } 
+    if(error) throw new Error(error.message)
   }
 
   const logout = async () => {
@@ -125,6 +141,7 @@ export const SupabaseContextProvider = ({ children }) => {
       // if(pivotUser.data.user)  navigate('/')
       if(pivotUser.data.user.email === 'bonkalvarado@gmail.com'){
         pivotUser.data.user.role =  'admin'
+      // if(pivotUser.data.user.role == 'admin'){
         const p = ['Fixture', 'Apuestas', 'Ranking','Admin'];
         setPages(p)
       }else{
@@ -262,6 +279,7 @@ export const SupabaseContextProvider = ({ children }) => {
         singUpWithPassword,
         signInWithEmail,
         signInWithGoogle,
+        simpleSignUp,
         logout,
         getUser,
         avatar,

@@ -13,7 +13,7 @@ import { useState } from 'react';
 // import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { Alert } from '@mui/material';
-import { Google, HowToReg, LockOpen } from '@mui/icons-material';
+import { Google, HowToReg, LockOpen, VpnKey } from '@mui/icons-material';
 import { useEffect } from 'react';
 import { useSupa } from '../context/SupabaseContext';
 
@@ -34,7 +34,7 @@ function Copyright(props) {
 
 export const Login = () => {
   // const [usuario, setUsuario] = useState({email:'',password:''});
-  const { signInWithGoogle,singUpWithPassword, signInWithEmail,usuario } = useSupa();
+  const { signInWithGoogle,singUpWithPassword, signInWithEmail,simpleSignUp,usuario } = useSupa();
   const [form, setForm] = useState({email:'',password:''})
   const [error, setError] = useState();
   const navigate = useNavigate();
@@ -52,9 +52,7 @@ export const Login = () => {
       setError('Debe llenar email y password con datos adecuados')
       return false
     }
-    console.log('signUp',form );
     try {
-      // const r = await singUpWithPassword(valores.email,valores.password)
       const r = await singUpWithPassword(form.email,form.password)
       console.log('respuesta',r);
     } catch (error) {
@@ -71,6 +69,14 @@ export const Login = () => {
       console.log('respuesta',r);
     } catch (error) {
       console.log(error);
+      setError(error.message)
+    }
+  }
+
+  const registroSimple =  async () =>{
+    try {
+      await simpleSignUp(form.email,form.password)
+    } catch (error) {
       setError(error.message)
     }
   }
@@ -129,6 +135,7 @@ export const Login = () => {
               sx={{ mt: 3 }}
               ><LockOpen/> Ingresar
             </Button>
+            <Button type='button' title='Simple Login' fullWidth onClick={registroSimple} variant="contained" color='secondary' sx={{ mt: 1, mb: 2 }}><VpnKey/> Simple Login</Button>
             <Button type='button' title='Iniciar con Google' fullWidth onClick={signInWithGoogle} variant="outlined" color='error' sx={{ mt: 1, mb: 2 }}><Google/> oogle</Button>
             <Button type='button' title='Registrarte' fullWidth onClick={signUp} variant="contained" color='secondary' sx={{ mt: 1, mb: 2 }}><HowToReg/> Regístrate</Button>
             {/* <Grid container sx={{mt:2}}>
