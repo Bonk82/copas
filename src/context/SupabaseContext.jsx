@@ -62,15 +62,25 @@ export const SupabaseContextProvider = ({ children }) => {
   }
 
   const signInWithEmail = async(email,password) => {
-    const { data, error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    })
-    if(data.user){
-      setUsuario(data.user)
-      navigate('/dashboard')
-    } 
-    console.log(data,error);
+    console.log('probando');
+    try {
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      })
+      console.log('respuesta signInWithPassword',data,error);
+      if(data.user){
+        setUsuario(data.user)
+        navigate('/')
+      } 
+      if(error){
+        console.log('si hay error',error);
+        throw new Error(error.message);
+      } 
+    } catch (error) {
+      console.log(error.message);
+      throw new Error(error.message);
+    }
   };
 
   const signInWithGoogle = async ()=> {
@@ -123,7 +133,7 @@ export const SupabaseContextProvider = ({ children }) => {
         navigate('/')
       } 
     } catch (error) {
-      console.log('erro al cargar usuario',error);
+      console.log('error al cargar usuario',error);
     }
   }
 

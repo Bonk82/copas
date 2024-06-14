@@ -1,3 +1,4 @@
+import * as React from 'react';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
@@ -34,7 +35,7 @@ function Copyright(props) {
 export const Login = () => {
   // const [usuario, setUsuario] = useState({email:'',password:''});
   const { signInWithGoogle,singUpWithPassword, signInWithEmail,usuario } = useSupa();
-
+  const [form, setForm] = useState({email:'',password:''})
   const [error, setError] = useState();
   const navigate = useNavigate();
 
@@ -44,26 +45,38 @@ export const Login = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [usuario])
   
-  const signUp = async(valores)=>{
-    console.log('signUp',valores);
+  const signUp = async(e)=>{
+    e.preventDefault()
+    if(!form.email || form.password) {
+      setError('Debe llenar email y password con datos adecuados')
+      return false
+    }
+    console.log('signUp',form );
     try {
       // const r = await singUpWithPassword(valores.email,valores.password)
-      const r = await singUpWithPassword('cristian.bonk@hotmail.com','123456')
+      const r = await singUpWithPassword(form.email,form.password)
       console.log('respuesta',r);
     } catch (error) {
       console.log(error);
+      setError(error.message)
     }
   }
 
-  const login = async(valores)=>{
-    console.log('login',valores);
+  const loginOk = async(e)=>{
+    e.preventDefault()
+    console.log('login',form);
     try {
-      const r = await signInWithEmail(valores.email,valores.password)
+      const r = await signInWithEmail(form.email,form.password)
       console.log('respuesta',r);
     } catch (error) {
       console.log(error);
-      setError(error)
+      setError(error.message)
     }
+  }
+
+  const handleChange = ({target:{value,name}})=>{
+    // console.log('cambiando',value,name);
+    setForm({...form,[name]:value})
   }
   
   return (
@@ -82,8 +95,8 @@ export const Login = () => {
           <Typography component="h1" variant="h5" color="primary.main">
             Iniciar Sesión
           </Typography>
-          {error && (<Alert severity="error">{error}</Alert>)} 
-          <Box component="form" onSubmit={login} noValidate sx={{ mt: 1 }}>
+          {error && <Alert severity="error">{error}</Alert>} 
+          <Box component="form" onSubmit={loginOk} noValidate sx={{ mt: 1 }}>
             <TextField
               margin="normal"
               required
@@ -93,6 +106,8 @@ export const Login = () => {
               name="email"
               autoComplete="email"
               autoFocus
+              onChange={handleChange}
+              variant='standard'
             />
             <TextField
               margin="normal"
@@ -103,6 +118,8 @@ export const Login = () => {
               type="password"
               id="password"
               autoComplete="current-password"
+              onChange={handleChange}
+              variant='standard'
             />
             <Button
               type="submit"
@@ -111,8 +128,8 @@ export const Login = () => {
               sx={{ mt: 3 }}
               ><LockOpen/> Ingresar
             </Button>
-            <Button type='button' title='Iniciar con Google' fullWidth onClick={signInWithGoogle} variant="outlined" sx={{ mt: 1, mb: 2 }}><Google/> oogle</Button>
-            <Button type='button' title='Registrarte' fullWidth onClick={signUp} variant="outlined" sx={{ mt: 1, mb: 2 }}><HowToReg/> Regístrate</Button>
+            <Button type='button' title='Iniciar con Google' fullWidth onClick={signInWithGoogle} variant="outlined" color='error' sx={{ mt: 1, mb: 2 }}><Google/> oogle</Button>
+            <Button type='button' title='Registrarte' fullWidth onClick={signUp} variant="contained" color='secondary' sx={{ mt: 1, mb: 2 }}><HowToReg/> Regístrate</Button>
             {/* <Grid container sx={{mt:2}}>
               <Grid item xs>
                 <Link sx={{cursor:'pointer'}} onClick={handleResetPassword} variant="body2">

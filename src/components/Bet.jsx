@@ -94,21 +94,23 @@ export const Bet = () => {
   }
 
   const colPartidos = [
-    {field:'puntaje',headerName:'Puntos', minWidth:40,flex:1,type:'number'},
+    {field:'puntaje',headerName:'Puntos', minWidth:40,flex:1,type:'number',
+      renderCell:(params)=>{ return <Typography variant="h4" style={{display:'grid',placeItems:'center',marginTop:'0.5rem'}}>{params.row.puntaje}</Typography>}
+    },
     {field:'fid_equipoa',headerName:'Equipo', minWidth:90, flex:1, align:'center'
-    , renderCell: (params) =><figure style={{textAlign:'center'}}>
-      <img title={`${params.row.equipoa}`} width='70' src={`../assets/${params.row.codigoa}.png`} alt='X'/>
+    , renderCell: (params) =><figure style={{alignItems:'center',margin:1,display:'flex',justifyContent:'space-between'}}>
+      <img title={`${params.row.equipoa}`} width='50' src={`../assets/${params.row.codigoa}.png`} alt='X'/>
       <figcaption >{`${params.row.equipoa}`} : {`${params.row.scorea}`}</figcaption>
     </figure>},
     {field:'beta',headerName:'Goles',editable:false, minWidth:40,flex:1,
-      renderCell:(params)=>{ return <Typography variant="h6">{params.row.beta}</Typography>}
+      renderCell:(params)=>{ return <Typography variant="h4" style={{display:'grid',placeItems:'center',marginTop:'0.5rem'}}>{params.row.beta}</Typography>}
     },
     {field:'betb',headerName:'Goles',editable:false, minWidth:40,flex:1,
-      renderCell:(params)=>{ return <Typography variant="h6">{params.row.betb}</Typography>}
+      renderCell:(params)=>{ return <Typography variant="h4" style={{display:'grid',placeItems:'center',marginTop:'0.5rem'}}>{params.row.betb}</Typography>}
     },
     {field:'fid_equipob',headerName:'Equipo', minWidth:90, flex:1, align:'center'
-    , renderCell: (params) =><figure style={{textAlign:'center'}}>
-      <img title={`${params.row.equipob}`} width='70' src={`../assets/${params.row.codigob}.png`} alt='X'/>
+    , renderCell: (params) =><figure style={{alignItems:'center',margin:1,display:'flex',justifyContent:'space-between'}}>
+      <img title={`${params.row.equipob}`} width='50' src={`../assets/${params.row.codigob}.png`} alt='X'/>
       <figcaption >{`${params.row.equipob}`} : {`${params.row.scoreb}`}</figcaption>
     </figure>},
     {field:'fechaPartidoStr',headerName:'Fecha Partido', minWidth:100,flex:1}
@@ -123,19 +125,19 @@ export const Bet = () => {
       },
     },
     {field:'fid_equipoa',headerName:'Equipo', minWidth:90, flex:1, align:'center'
-    , renderCell: (params) =><figure style={{textAlign:'center'}}>
-      <img title={`${params.row.equipoa}`} width='70' src={`../assets/${params.row.codigoa}.png`} alt='X'/>
+    , renderCell: (params) =><figure style={{alignItems:'center',margin:1,display:'flex',justifyContent:'space-between'}}>
+      <img title={`${params.row.equipoa}`} width='50' src={`../assets/${params.row.codigoa}.png`} alt='X'/>
       <figcaption>{`${params.row.equipoa}`}</figcaption>
     </figure>},
     {field:'beta',headerName:'Goles', minWidth:40,flex:1,editable:true,type:'number',min:0,max:9,align:'center',
-      renderCell:(params)=>{return <Typography variant="h6">{params.row.beta}</Typography>}
+      renderCell:(params)=>{return <Typography variant="h4" style={{display:'grid',placeItems:'center'}}>{params.row.beta}</Typography>}
     },
     {field:'betb',headerName:'Goles', minWidth:40,flex:1,editable:true,type:'number',
-      renderCell:(params)=>{ return <Typography variant="h6">{params.row.betb}</Typography>}
+      renderCell:(params)=>{ return <Typography variant="h4" style={{display:'grid',placeItems:'center'}}>{params.row.betb}</Typography>}
     },
     {field:'fid_equipob',headerName:'Equipo', minWidth:90, flex:1, align:'center', 
-    renderCell: (params) =><figure style={{textAlign:'center'}}>
-      <img title={`${params.row.equipob}`} width='70' src={`../assets/${params.row.codigob}.png`} alt='X'/>
+    renderCell: (params) =><figure style={{alignItems:'center',margin:1,display:'flex',justifyContent:'space-between'}}>
+      <img title={`${params.row.equipob}`} width='50' src={`../assets/${params.row.codigob}.png`} alt='X'/>
       <figcaption>{`${params.row.equipob}`}</figcaption>
     </figure>},
     {field:'fechaPartidoStr',headerName:'Fecha Partido', minWidth:100,flex:1,editable:false},
@@ -176,31 +178,31 @@ export const Bet = () => {
         columnas = colPartidos;
       }
       if(tipo==='Apuestas del Grupo'){
-        usuariosAll = await getReg('usuario');
-        partidosAll = await getReg('partido')
-        filas = await alasql(`select a.id, a.scorea beta, a.scoreb betb, a.uid,p.fid_equipoa,p.fid_equipob,p.fecha,u.nombre
-        from ? a inner join ? p on a.partidoID = p.id inner join ? u on a.uid = u.userID
-        where u.grupo = '${usuario.grupo}' order by p.fecha.toDate(), u.nombre`,[apuestasAll,partidosAll,usuariosAll]);
-
-        filas = await filas.filter(f=>dayjs(f.fecha.toDate()) < dayjs());
-        filas = await filas.sort((a,b)=>b.fecha.toDate() - a.fecha.toDate())
+        // usuariosAll = await getReg('usuario');//ya no
+        // partidosAll = await getReg('partido') //homologar todo esto desde vw_apuestas
+        // filas = await alasql(`select a.id, a.scorea beta, a.scoreb betb, a.uid,p.fid_equipoa,p.fid_equipob,p.fecha,u.nombre
+        // from ? a inner join ? p on a.partidoID = p.id inner join ? u on a.uid = u.userID
+        // where u.grupo = '${usuario.grupo}' order by p.fecha.toDate(), u.nombre`,[apuestasAll,partidosAll,usuariosAll]);
+        console.log('en grupo apuestas',apuestas);
+        filas = apuestas.filter(f=>dayjs(f.fecha).toDate() < dayjs().toDate());
+        // filas = await filas.sort((a,b)=>b.fecha - a.fecha)
 
         columnas = [
           {field:'nombre',headerName:'Usuario', minWidth:120,flex:1},
           {field:'fid_equipoa',headerName:'Equipo', minWidth:90, flex:1, align:'center'
-          , renderCell: (params) =><figure style={{textAlign:'center'}}>
-            <img title={`${params.row.fid_equipoa}`} width='70' src={`../assets/${params.row.fid_equipoa}.png`} alt='X'/>
+          , renderCell: (params) =><figure style={{alignItems:'center',margin:1,display:'flex',justifyContent:'space-between'}}>
+            <img title={`${params.row.fid_equipoa}`} width='50' src={`../assets/${params.row.fid_equipoa}.png`} alt='X'/>
             <figcaption>{`${params.row.fid_equipoa}`}</figcaption>
           </figure>},
           {field:'beta',headerName:'Goles',editable:false, minWidth:40,flex:1,align:'center', renderCell:(params)=>{
-            return <Typography variant="h4">{params.row.beta}</Typography>
+            return <Typography variant="h4" style={{display:'grid',placeItems:'center'}}>{params.row.beta}</Typography>
           }},
           {field:'betb',headerName:'Goles',editable:false, minWidth:40,flex:1, renderCell:(params)=>{
-            return <Typography variant="h4">{params.row.betb}</Typography>
+            return <Typography variant="h4" style={{display:'grid',placeItems:'center'}}>{params.row.betb}</Typography>
           }},
           {field:'fid_equipob',headerName:'Equipo', minWidth:90, flex:1, align:'center'
-          , renderCell: (params) =><figure style={{textAlign:'center'}}>
-            <img title={`${params.row.fid_equipob}`} width='70' src={`../assets/${params.row.fid_equipob}.png`} alt='X'/>
+          , renderCell: (params) =><figure style={{alignItems:'center',margin:1,display:'flex',justifyContent:'space-between'}}>
+            <img title={`${params.row.fid_equipob}`} width='50' src={`../assets/${params.row.fid_equipob}.png`} alt='X'/>
             <figcaption>{`${params.row.fid_equipob}`}</figcaption>
           </figure>},
           {field:'id',headerName:'ID'}
@@ -235,7 +237,7 @@ export const Bet = () => {
               }}
               pageSizeOptions={[5,10,25]}
               disableSelectionOnClick
-              rowHeight={70}
+              rowHeight={80}
               experimentalFeatures={{ newEditingApi: true }}
               columnVisibilityModel={{id_partido:false,id_apuesta:false,activo:false}}
               sx={{fontSize:12}}
@@ -247,7 +249,7 @@ export const Bet = () => {
       <Snackbar onClose={handleClose} open={alerta[0]} TransitionComponent={slideAlert} autoHideDuration={6000} anchorOrigin={{vertical:'top',horizontal:'right'}}>
         <Alert severity={alerta[1]} sx={{ width: '100%' }}> {alerta[2]}</Alert>
       </Snackbar>
-      <Backdrop sx={{ color: 'primary.main', zIndex: (theme) => theme.zIndex.drawer + 1 }} open={loading}>
+      <Backdrop sx={{ color: 'primary.main', zIndex: (theme) => theme.zIndex.drawer + 100 }} open={loading}>
         <CircularProgress color="inherit" size='7rem' thickness={5} />
       </Backdrop>
     </>
