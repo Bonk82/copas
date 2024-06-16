@@ -16,6 +16,7 @@ import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import { useNavigate } from "react-router-dom";
 import { useSupa } from "../context/SupabaseContext";
 import { esES } from "@mui/x-data-grid/locales";
+import { UserAuth } from "../context/AuthContext";
 
 let apuestasAll = [];
 
@@ -23,7 +24,9 @@ dayjs.extend(utc);
 dayjs.extend(timezone);
 
 export const Admin = () => {
-  const { loading,usuario,createReg,partidos,equipos,getReg,getRegFilter,updateReg,deleteReg } = useSupa();
+  const { loading,createReg,partidos,equipos,getReg,updateReg } = useSupa();
+  const {usuario}= UserAuth();
+
   const navigate = useNavigate();
   // const [isAdmin, setIsAdmin] = useState(false)
   // const [partidos, setPartidos] = useState([])
@@ -34,7 +37,7 @@ export const Admin = () => {
     fecha:dayjs().toDate(),
     finalizado:false,
     torneo:'EURO COPA',
-    usuario_registro:usuario.id,
+    usuario_registro:usuario?.id,
   });
   const [alerta, setAlerta] = useState([false,'success','']);
   const [openSpinner, setOpenSpinner] = useState(false);

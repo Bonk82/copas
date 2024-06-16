@@ -21,141 +21,22 @@ export const SupabaseContextProvider = ({ children }) => {
   const [partidos, setPartidos] = useState([]);
   const [apuestas, setApuestas] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [avatar, setAvatar] = useState('');
-  const [usuario, setUsuario] = useState(null);
+  // const [avatar, setAvatar] = useState('');
+  // const [usuario, setUsuario] = useState(null);
 
-  const [pages, setPages] = useState(['Fixture', 'Apuestas', 'Ranking'])
+  // const [pages, setPages] = useState(['Fixture', 'Apuestas', 'Ranking'])
 
 
   // const router = useRouter()
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
   
-  useEffect(()=>{
-    getUser();
-    // getReg('parametrica','nombre',true)
-    // if(!usuario) router.push('/login')
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  },[])
-
-  const loginWithMagicLink = async (email) => {
-    setLoading(true);
-    try {
-      const { error } = await supabase.auth.signIn({ email });
-      if (error) {
-        throw error;
-      }
-      console.log("revisa tu correo para usar el enlace de registro");
-    } catch (error) {
-      console.log(error.message);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const singUpWithPassword = async (email,password)=>{
-    const {data,error} = await supabase.auth.signUp({
-      email,
-      password
-    })
-    console.log(data,error),email,password;
-  }
-
-  const signInWithEmail = async(email,password) => {
-    console.log('probando');
-    try {
-      const { data, error } = await supabase.auth.signInWithPassword({
-        email,
-        password,
-      })
-      console.log('respuesta signInWithPassword',data,error);
-      if(data.user){
-        setUsuario(data.user)
-        navigate('/')
-      } 
-      if(error){
-        console.log('si hay error',error);
-        throw new Error(error.message);
-      } 
-    } catch (error) {
-      console.log(error.message);
-      throw new Error(error.message);
-    }
-  };
-
-  const signInWithGoogle = async ()=> {
-    console.log('enrtando a singGoogle');
-    const { data, error } = await supabase.auth.signInWithOAuth({
-      provider: 'google',
-    })
-    if(data.user){
-      setUsuario(data.user)
-      navigate('/')
-    } 
-    if(error) throw new Error(error.message)
-  }
-
-  const simpleSignUp = async (email,password) =>{
-    let { data, error } = await supabase.auth.signUp({
-      email: email,
-      password: password
-    })
-    console.log('la data',data,error);
-    if(data.user){
-      setUsuario(data.user)
-      navigate('/')
-    } 
-    if(error) throw new Error(error.message)
-  }
-
-  const logout = async () => {
-    setLoading(true);
-    console.log('sainedo');
-    try {
-      const { error } = await supabase.auth.signOut();
-      if (error) throw error;
-      if(!error){
-        setUsuario(null);
-        navigate('/login');
-      }
-    } catch (error) {
-      console.log(error.error_description || error.message);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const getUser = async () =>{
-    try {
-      const pivotUser = await supabase.auth.getUser();
-      console.log('ingresando',pivotUser);
-      if(!pivotUser.data.user){
-        navigate('/login')
-        return false;
-      } 
-      pivotUser.data.user?.identities.forEach(e => {
-        e.identity_data.picture ? setAvatar(e.identity_data.picture):'C'
-        // console.log('entroEach',avatar);
-      });
-
-      // if(pivotUser.data.user)  navigate('/')
-      if(pivotUser.data.user.email === 'bonkalvarado@gmail.com'){
-        pivotUser.data.user.role =  'admin'
-      // if(pivotUser.data.user.role == 'admin'){
-        const p = ['Fixture', 'Apuestas', 'Ranking','Admin'];
-        setPages(p)
-      }else{
-        pivotUser.data.user.role = 'usuario';
-      }
-      if (pivotUser.data.user){
-        // getReg('vw_menu_rol','id_menu','asc')
-        setUsuario(pivotUser.data.user)
-        navigate('/')
-      } 
-    } catch (error) {
-      console.log('error al cargar usuario',error);
-    }
-  }
+  // useEffect(()=>{
+  //   getUser();
+  //   // getReg('parametrica','nombre',true)
+  //   // if(!usuario) router.push('/login')
+  // // eslint-disable-next-line react-hooks/exhaustive-deps
+  // },[])
 
   const createReg = async (reg,table) => {
     setLoading(true);
@@ -275,21 +156,11 @@ export const SupabaseContextProvider = ({ children }) => {
         apuestas,
         loading,
         setLoading,
-        loginWithMagicLink,
-        singUpWithPassword,
-        signInWithEmail,
-        signInWithGoogle,
-        simpleSignUp,
-        logout,
-        getUser,
-        avatar,
-        usuario,
         createReg,
         getReg,
         getRegFilter,
         updateReg,
         deleteReg,
-        pages
       }}
     >
       {children}

@@ -12,11 +12,11 @@ import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useSupa } from '../context/SupabaseContext';
+import { UserAuth } from '../context/AuthContext';
 
 const settings = ['Dashboard', 'Salir'];
 export const Navbar = () => {
-  const { usuario,logout,avatar,pages } = useSupa();
+  const { usuario,logout,avatar,pages } = UserAuth();
   const [anchorElNav, setAnchorElNav] = useState(null);
   const [anchorElUser, setAnchorElUser] = useState(null);
   
@@ -52,7 +52,8 @@ export const Navbar = () => {
   };
 
   return (
-    usuario &&
+    <>
+    {usuario &&
     <AppBar position="sticky">
       <Container maxWidth="xl" sx={{fontFamily:'monospace',color:'primary'}}>
         <Toolbar disableGutters>
@@ -175,6 +176,7 @@ export const Navbar = () => {
           </Box>
         </Toolbar>
       </Container>
-    </AppBar>
+    </AppBar>}
+    </>
   );
 }

@@ -33,7 +33,7 @@ function Copyright(props) {
 }
 
 export const Register = () => {
-  const { singUpWithPassword,usuario,createReg } = useSupa();
+  const { singUpWithPassword,createReg } = useSupa();
   const [error, setError] = useState();
   // const {signup}= useAuth();
   const navigate = useNavigate();

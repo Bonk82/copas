@@ -16,7 +16,7 @@ import { esES } from "@mui/x-data-grid/locales"
 let historialAll = [];
 
 export const Rank = () => {
-  const { loading,usuario,apuestas,getReg } = useSupa();
+  const { loading,apuestas,getReg } = useSupa();
   const [apostadores, setApostadores] = useState([]);
   const [dataChart, setDataChart] = useState({x:[],y:[],titulos:{},naame:''})
   const [dataChartLine, setDataChartLine] = useState({x:[],y:[],titulos:{},naame:''})
@@ -68,7 +68,8 @@ export const Rank = () => {
     {field:'puntos',headerName:'Puntos', minWidth: 80,flex:1,type:'number'},
     {field: 'Acciones', headerName: 'Historial', sortable: false, minWidth: 80,flex:1,
     renderCell: (params) => {
-      return <IconButton onClick={()=>cargarHistorial(params.row)} title='Historial Apuestas' color='success'><MoneyIcon fontSize="large"/></IconButton>;
+      return <IconButton onClick={()=>cargarHistorial(params.row)} style={{marginTop:-10}}
+      title='Historial Apuestas' color='success'><MoneyIcon fontSize="large"/></IconButton>;
       },
     },
     {field:'usuario_apuesta',headerName:'ID', width: 80},
@@ -96,7 +97,6 @@ export const Rank = () => {
 
   return (
     <>
-      {/* <Navbar/> */}
       <Box component='main' sx={{backgroundColor:'whitesmoke',minHeight:'100vh',width:'100vw',display:'flex',flexDirection:{xs:'column',md:'row'},justifyContent:'center',gap:1}} >
         <Box sx={{ height:{xs:400, md:550}, width:{xs:'100vw',md:450},justifyContent:'center',mt:1,paddingX:{xs:0.5,md:4} }}>
           <Typography variant="h5" color='persist.main' sx={{fontWeight:500,backgroundColor:'secondary.main',borderRadius:2,pl:4,mb:1}} >Ranking</Typography>

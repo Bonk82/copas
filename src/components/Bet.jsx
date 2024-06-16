@@ -7,12 +7,14 @@ import SaveAsIcon from '@mui/icons-material/SaveAs';
 import dayjs from "dayjs";
 import { useSupa } from "../context/SupabaseContext";
 import { esES } from "@mui/x-data-grid/locales";
+import { UserAuth } from "../context/AuthContext";
 
 let apuestasAll = [];
 let partidosAll = [];
 
 export const Bet = () => {
-  const { loading,usuario,createReg,partidos,apuestas,getReg,updateReg } = useSupa();
+  const { loading,createReg,partidos,apuestas,getReg,updateReg } = useSupa();
+  const {usuario} = UserAuth();
   const [losPartidos, setLosPartidos] = useState([])
   const [lasApuestas, setLasApuestas] = useState([]);
   const [alerta, setAlerta] = useState([false,'success','']);

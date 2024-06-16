@@ -1,9 +1,8 @@
 import { Backdrop, Box, CircularProgress, ToggleButton, ToggleButtonGroup } from "@mui/material"
 import { DataGrid} from "@mui/x-data-grid";
 import alasql from "alasql";
-import { useState } from "react";
+import {useState } from "react";
 // import { useAuth } from "../context/AuthContext";
-import { Navbar } from "./Navbar"
 import dayjs from "dayjs";
 import { useSupa } from "../context/SupabaseContext";
 import { esES } from "@mui/x-data-grid/locales";
@@ -13,12 +12,13 @@ import { esES } from "@mui/x-data-grid/locales";
 // const dinamico=[];
 
 export const Info = () => {
-  const { loading,usuario,createReg,parametricas,pedidos,pedidosDetalle,clientes,productos,getReg,getRegFilter,updateReg,deleteReg } = useSupa();
+  const { loading,getReg } = useSupa();
   const buttons = [
     <ToggleButton  key="resultados" value='resultados' onClick={()=>cargarGrilla('resultados')}>Resultados</ToggleButton>,
     <ToggleButton  key="posiciones" value='posiciones' onClick={()=>cargarGrilla('posiciones')}>Posiciones</ToggleButton>,
     <ToggleButton  key="dinamico" value='dinamico' onClick={()=>cargarGrilla('dinamico')}>Dinámico</ToggleButton>
   ];
+  
 
   // const {tipoUsuario}= useAuth()
 
@@ -103,7 +103,6 @@ export const Info = () => {
 
   return (
     <>
-    {/* <Navbar/> */}
       <Box component='main' sx={{textAlign:'center',backgroundColor:"whitesmoke",width:'100vw'}} >
         <Box sx={{display: 'flex',flexDirection: 'column', alignItems: 'center','& > *': {m: 1, }}}>
           <ToggleButtonGroup size="large" value={grilla.tipo} color="primary" sx={{fontWeight:'bold'}} aria-label="Platform" exclusive >
@@ -132,7 +131,6 @@ export const Info = () => {
               rowHeight={70}
               experimentalFeatures={{ newEditingApi: true }}
               localeText={esES.components.MuiDataGrid.defaultProps.localeText}
-              // sortModel={grilla.orden}
             />
           </Box>
         </Box>}

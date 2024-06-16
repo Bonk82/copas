@@ -1,21 +1,16 @@
-import * as React from 'react';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
-// import FormControlLabel from '@mui/material/FormControlLabel';
-// import Checkbox from '@mui/material/Checkbox';
 import Box from '@mui/material/Box';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
-// import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { useState } from 'react';
-// import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { Alert } from '@mui/material';
-import { Google, HowToReg, LockOpen, VpnKey } from '@mui/icons-material';
+import { Google, HowToReg, LockOpen } from '@mui/icons-material';
 import { useEffect } from 'react';
-import { useSupa } from '../context/SupabaseContext';
+import { UserAuth } from '../context/AuthContext';
 
 function Copyright(props) {
   return (
@@ -34,16 +29,16 @@ function Copyright(props) {
 
 export const Login = () => {
   // const [usuario, setUsuario] = useState({email:'',password:''});
-  const { signInWithGoogle,singUpWithPassword, signInWithEmail,simpleSignUp,usuario } = useSupa();
+  const {signInWithGoogle,signInWithEmail,singUpWithPassword} =  UserAuth()
   const [form, setForm] = useState({email:'',password:''})
   const [error, setError] = useState();
   const navigate = useNavigate();
 
-  useEffect(() => {
-    console.log('revisando',usuario);
-    if(usuario?.role) navigate('/');
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [usuario])
+  // useEffect(() => {
+  //   console.log('revisando',usuario);
+  //   if(usuario?.role) navigate('/');
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [])
   
   const signUp = async(e)=>{
     e.preventDefault()
@@ -67,16 +62,9 @@ export const Login = () => {
     try {
       const r = await signInWithEmail(form.email,form.password)
       console.log('respuesta',r);
+      if(r.user) navigate('/')
     } catch (error) {
       console.log(error);
-      setError(error.message)
-    }
-  }
-
-  const registroSimple =  async () =>{
-    try {
-      await simpleSignUp(form.email,form.password)
-    } catch (error) {
       setError(error.message)
     }
   }
@@ -135,7 +123,6 @@ export const Login = () => {
               sx={{ mt: 3 }}
               ><LockOpen/> Ingresar
             </Button>
-            <Button type='button' title='Simple Login' fullWidth onClick={registroSimple} variant="contained" color='secondary' sx={{ mt: 1, mb: 2 }}><VpnKey/> Simple Login</Button>
             <Button type='button' title='Iniciar con Google' fullWidth onClick={signInWithGoogle} variant="outlined" color='error' sx={{ mt: 1, mb: 2 }}><Google/> oogle</Button>
             <Button type='button' title='Registrarte' fullWidth onClick={signUp} variant="contained" color='secondary' sx={{ mt: 1, mb: 2 }}><HowToReg/> Regístrate</Button>
             {/* <Grid container sx={{mt:2}}>
