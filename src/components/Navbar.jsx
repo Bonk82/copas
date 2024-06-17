@@ -31,12 +31,12 @@ export const Navbar = () => {
   };
 
   const handleCloseNavMenu = (e) => {
-    const destino = e.target.textContent 
+    const destino = e.target.textContent
     console.log({destino});
     setAnchorElNav(null);
-    if(destino === 'Fixture') navigate('/');
+    if(destino === 'Partidos') navigate('/');
     if(destino === 'Apuestas') navigate('/bet');
-    if(destino === 'Ranking') navigate('/ranking');
+    if(destino === 'Puestos') navigate('/ranking');
     if(destino === 'Admin') navigate('/admin');
   };
 
