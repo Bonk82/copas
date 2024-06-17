@@ -108,7 +108,7 @@ export const Rank = () => {
             pageSize={10}
             density="compact"
             initialState={{
-              pagination: { paginationModel: { pageSize: 5 } },
+              pagination: { paginationModel: { pageSize: 10 } },
             }}
             pageSizeOptions={[5,10,25]}
             disableSelectionOnClick

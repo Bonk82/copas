@@ -232,14 +232,13 @@ export const Bet = () => {
               pageSize={10}
               density="compact"
               initialState={{
-                pagination: { paginationModel: { pageSize: 5 } },
+                pagination: { paginationModel: { pageSize: 10 } },
               }}
               pageSizeOptions={[5,10,25]}
               disableSelectionOnClick
               experimentalFeatures={{ newEditingApi: true }}
               columnVisibilityModel={{id_partido:false,id_apuesta:false,activo:false}}
               rowHeight={70}
-              // sortModel={[{field:'fecha'}]}
               localeText={esES.components.MuiDataGrid.defaultProps.localeText}
             />
           </Box>}
