@@ -226,19 +226,19 @@ export const Bet = () => {
             <Typography variant="h5" sx={{fontWeight:500,backgroundColor:'secondary.main',color:'persist.main',borderRadius:2,pl:4,mb:1}} >{grilla.tipo}</Typography>
             <DataGrid
               autoHeight
-              rows={grilla.filas}
               getRowId={(row) =>  ['Apostar','Historial Personal'].includes(grilla.tipo) ? row.id_partido : row.id_apuesta}
+              rows={grilla.filas}
               columns={grilla.columnas}
+              pageSize={10}
               density="compact"
               initialState={{
                 pagination: { paginationModel: { pageSize: 5 } },
               }}
               pageSizeOptions={[5,10,25]}
               disableSelectionOnClick
-              rowHeight={80}
               experimentalFeatures={{ newEditingApi: true }}
               columnVisibilityModel={{id_partido:false,id_apuesta:false,activo:false}}
-              sx={{fontSize:12}}
+              rowHeight={70}
               // sortModel={[{field:'fecha'}]}
               localeText={esES.components.MuiDataGrid.defaultProps.localeText}
             />

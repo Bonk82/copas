@@ -116,7 +116,7 @@ export const Info = () => {
         </Box>}
         {grilla.mostrar && <Box sx={{display:'flex',justifyContent:'center'}}>
           <Box sx={{width:{xs:'100%',md:'80%'},height: '85vh'}} >
-          <DataGrid
+            <DataGrid
               rows={grilla.filas}
               getRowId={(row) => row.id_partido || row.id_equipo}
               columns={grilla.columnas}
