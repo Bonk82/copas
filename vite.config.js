@@ -16,6 +16,11 @@ export default defineConfig({
         display:'standalone',
         display_override:['window-controls-overlay'],
         lang:'es-ES',
+        id: "miAPPBet",
+        orientation: "portrait",
+        categories: [
+          "games"
+        ],
         icons: [
           {
             src: 'icono.jpeg',
@@ -23,9 +28,9 @@ export default defineConfig({
             type: 'image/jpeg'
           },
           {
-            src: 'icono.jpeg',
+            src: 'logo-png512.png',
             sizes: '512x512',
-            type: 'image/jpeg'
+            type: 'image/png'
           }
         ],
        }
