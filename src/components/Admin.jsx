@@ -107,18 +107,19 @@ export const Admin = () => {
     const factorA = (Number(equipos.filter(f=>f.nombre === data.equipoa)[0]?.nivel.replace('$','')) / 100)+1//id_partido;
     const factorB = (Number(equipos.filter(f=>f.nombre === data.equipob)[0]?.nivel.replace('$','')) / 100)+1;
     const factorMed = Number(((Number(factorA)+Number(factorB))/2).toFixed(2))
-    console.log('rev',estasApuestas,factorA,factorB,data);
+    const elFactor = data.scorea>data.scoreb ? factorA : data.scoreb>data.scorea ? factorB : factorMed
+    console.log('rev',estasApuestas,factorA,factorB,factorMed,data,elFactor);
     estasApuestas.map(e=>{
       let puntaje = 0
       if(data.scorea == e.beta) puntaje+=1;//acierto goles A
       if(data.scoreb == e.betb) puntaje+=1;//acierto goles B
-      if(data.scorea > data.scoreb && e.beta > e.betb) puntaje += factorA;//acierto a ganador A
-      if(data.scorea < data.scoreb && e.beta < e.betb) puntaje += factorB;//acierto a ganador B
-      if(data.scorea == data.scoreb && e.beta == e.betb) puntaje += factorMed;//acierto al empate
-      if(data.scorea == e.beta && e.scoreb == e.betb) puntaje += (2*(data.scorea>data.scoreb ? factorA : data.scoreb>data.scorea ? factorB : factorMed));//acierto al resultado
+      if(data.scorea > data.scoreb && e.beta > e.betb) puntaje += elFactor;//acierto a ganador A
+      if(data.scorea < data.scoreb && e.beta < e.betb) puntaje += elFactor;//acierto a ganador B
+      if(data.scorea == data.scoreb && e.beta == e.betb) puntaje += elFactor;//acierto al empate
+      if(data.scorea == e.beta && e.scoreb == e.betb) puntaje += (2*elFactor);//acierto al resultado exacto
       //TODO: agregar la valoracion del factor de equipo y el tiempo antes del partido
       e.puntaje = puntaje;
-      // console.log('laApuesta',e);
+      console.log('laApuesta',e,puntaje);
       return e;
     });
 
