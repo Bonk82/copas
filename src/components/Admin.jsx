@@ -10,7 +10,6 @@ import { DateTimePicker, renderTimeViewClock } from "@mui/x-date-pickers";
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { useEffect } from "react";
 import { useState } from "react"
-// import {  } from "../context/SupabaseContext";
 import SaveAsIcon from '@mui/icons-material/SaveAs';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import { useNavigate } from "react-router-dom";
@@ -28,9 +27,6 @@ export const Admin = () => {
   const {usuario}= UserAuth();
 
   const navigate = useNavigate();
-  // const [isAdmin, setIsAdmin] = useState(false)
-  // const [partidos, setPartidos] = useState([])
-  // const [equipos, setEquipos] = useState([]);
   const [partido, setPartido] = useState({
     fid_equipoa:'',scorea:0,
     fid_equipob:'',scoreb:0,
@@ -41,26 +37,13 @@ export const Admin = () => {
   });
   const [alerta, setAlerta] = useState([false,'success','']);
   const [openSpinner, setOpenSpinner] = useState(false);
-  // const [torneo, setTorneo] = useState('EURO COPA')
-
-  // useEffect(() => {
-  //   (usuario.role !== 'admin') ? navigate('/'): setIsAdmin(true);
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [])
   
   useEffect(() => {
     console.log('entra efect admin',equipos);
     if(usuario.role !== 'admin') navigate('/')
-    // if(usuario.role === 'admin'){
-    //   setIsAdmin(true);
-    //   cargarEquipos();
-    // } 
     if(equipos.length==0) cargarEquipos();
     if(partidos.length==0) listarPartidos();
     listarApuestas();
-
-    // listarPartidos();
-    // listarApuestas();
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
@@ -123,15 +106,16 @@ export const Admin = () => {
     const estasApuestas = apuestasAll.filter(f=>f.id_partido === data.id_partido);
     const factorA = (Number(equipos.filter(f=>f.nombre === data.equipoa)[0]?.nivel.replace('$','')) / 100)+1//id_partido;
     const factorB = (Number(equipos.filter(f=>f.nombre === data.equipob)[0]?.nivel.replace('$','')) / 100)+1;
+    const factorMed = Number(((Number(factorA)+Number(factorB))/2).toFixed(2))
     console.log('rev',estasApuestas,factorA,factorB,data);
     estasApuestas.map(e=>{
       let puntaje = 0
-      if(data.scorea === e.scorea) puntaje+=1;
-      if(data.scoreb === e.scoreb) puntaje+=1;
-      if(data.scorea === e.scorea && data.scoreb === e.scoreb) puntaje+=1;
-      if(data.scorea > data.scoreb && e.beta > e.betb) puntaje += (1*factorA)
-      if(data.scorea < data.scoreb && e.beta < e.betb) puntaje += (1*factorB)
-      if(data.scorea === e.beta && e.scoreb === e.betb) puntaje += 2
+      if(data.scorea == e.beta) puntaje+=1;//acierto goles A
+      if(data.scoreb == e.betb) puntaje+=1;//acierto goles B
+      if(data.scorea > data.scoreb && e.beta > e.betb) puntaje += factorA;//acierto a ganador A
+      if(data.scorea < data.scoreb && e.beta < e.betb) puntaje += factorB;//acierto a ganador B
+      if(data.scorea == data.scoreb && e.beta == e.betb) puntaje += factorMed;//acierto al empate
+      if(data.scorea == e.beta && e.scoreb == e.betb) puntaje += (2*(data.scorea>data.scoreb ? factorA : data.scoreb>data.scorea ? factorB : factorMed));//acierto al resultado
       //TODO: agregar la valoracion del factor de equipo y el tiempo antes del partido
       e.puntaje = puntaje;
       // console.log('laApuesta',e);
@@ -145,7 +129,6 @@ export const Admin = () => {
           puntaje:e.puntaje
         }
         await updateReg('apuesta',formed)
-        // console.log('apuesta actualizada',e.id);
       } catch (error) {
         console.log(error);
       }
@@ -166,9 +149,7 @@ export const Admin = () => {
               </IconButton>;
       },
     },
-    {field:'torneo',headerName:'COPA', minWidth:30,flex:1,type:'text',align:'center', /*renderCell:(params)=>{
-      return <Typography variant="h6">{params.row.torneo}</Typography>
-    }*/},
+    {field:'torneo',headerName:'COPA', minWidth:30,flex:1,type:'text',align:'center'},
     {field:'fid_equipoa',headerName:'Equipo', minWidth:130, flex:0.5, align:'center'
     , renderCell: (params) =><figure style={{alignItems:'center',margin:1,display:'flex',justifyContent:'flex-start'}}>
       <img title={`${params.row.equipoa}`} width='50' src={`../assets/${params.row.codigoa}.png`} alt='X'/>
@@ -191,10 +172,6 @@ export const Admin = () => {
 
   const cargarEquipos = async () =>{
     await getReg('equipo','nombre',true);
-    // let resp = await getReg('equipo','nombre',true);
-    // let respi = alasql('select * from ? order by nombre',[resp])
-    // equiposAll = respi;
-    // setEquipos(respi);
   }
 
   const listarPartidos = async()=>{
@@ -203,10 +180,6 @@ export const Admin = () => {
       e.fechaPartidoStr = dayjs(e.fecha).format('DD/MMM HH:mm');
       return e
     })
-    // let respi = resp.sort((a,b)=> new Date(a.fechaPartido).getTime() - new Date(b.fechaPartido).getTime());
-    // resp = await alasql('select * from ? order by fecha',[resp])
-    // console.log('partidos',resp);
-    // setPartidos(resp);
   }
 
   const handleSubmit = async(e)=>{
@@ -217,42 +190,25 @@ export const Admin = () => {
     }
     setOpenSpinner(true);
     const data = new FormData(e.currentTarget);
-    // const nuevoPartido = {
-    //   torneo:''
-    //   fid_equipoa:
-    //   fid_equipob
-    //   fecha
-    //   usuario_registro
-    // }
     console.log('la data',data,partido);
-
-    // const part = {nombre: data.get('equipoA'),factor: Number(data.get('scorea'))}
-    // console.log(partido,part);
     try {
       await createReg(partido,'partido');
       setAlerta([true,'success','Partido registrado con éxito!']);
       listarPartidos();
-      // console.log(nuevoPartido);
-      // document.querySelector('#fid_equipoa').value = '';
-      // document.querySelector('#fid_equipob').value = '';
-      // document.querySelector('#fid_equipoa').focus();
-      // setEquipos(equiposAll);
     } catch (error) {
       setAlerta([true,'error',error]);
       console.log(error.code,error.message);
     } finally{
       setOpenSpinner(false);
     }
-    // console.log('registrado');
   }
 
   const handleChange = ({target:{value,name}})=>{
     console.log('cambiando',value,name);
 
     setPartido({...partido,[name]:value})
-    // console.log(document.querySelector('#faseGrupos').value);
-    const grupo = equipos.filter(f=>f.nombre === value)[0]?.grupo;
-    const pivot = equipos.filter(f=>f.grupo === grupo);
+    // const grupo = equipos.filter(f=>f.nombre === value)[0]?.grupo;
+    // const pivot = equipos.filter(f=>f.grupo === grupo);
     // setEquipos(pivot); 
   }
 
@@ -321,21 +277,14 @@ export const Admin = () => {
             <DateTimePicker
               label="Fecha y Hora Partido"
               fullWidth
-              // value={partido.fecha}
               onChange={handleChangeFecha}
               ampm = {false}
-              // timezone='Atlantic/Faroe'//"America/La_Paz"
-              // maxDate={'20221218'}
-              // maxTime={'15:00:00'}
-              // minTime={'06:00:00'}
               inputFormat='DD/MM/YYYY HH:mm'
               disablePast
-              // views={['year','month','day','hours','minutes']}
               viewRenderers={{
                 hours: renderTimeViewClock,
                 minutes: renderTimeViewClock,
               }}
-              // renderInput={(params) => <TextField size="small" sx={{width:'50%'}} {...params} />}
             />
           </LocalizationProvider>
         </Box>

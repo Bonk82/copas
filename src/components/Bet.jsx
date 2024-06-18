@@ -222,7 +222,7 @@ export const Bet = () => {
           </ToggleButtonGroup>
         </Box>
         {grilla.mostrar && 
-          <Box sx={{ height:{xs:600,md:800}, display:'flex',justifyContent:'center',flexDirection:'column',paddingX:{xs:0.5,md:40} }}>
+          <Box sx={{ height:{xs:600,md:800}, display:'flex',justifyContent:'center',flexDirection:'column',paddingX:{xs:0.5,md:40},gap:1 }}>
             <Typography variant="h5" sx={{fontWeight:500,backgroundColor:'secondary.main',color:'persist.main',borderRadius:2,pl:4,mb:1}} >{grilla.tipo}</Typography>
             <DataGrid
               autoHeight
