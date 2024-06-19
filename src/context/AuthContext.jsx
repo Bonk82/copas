@@ -15,7 +15,7 @@ export const AuthContextProvider =({children})=> {
   const navigate = useNavigate();
   const [usuario, setUsuario] = useState({})
   const [avatar, setAvatar] = useState('');
-  const [pages, setPages] = useState(['Partidos', 'Apuestas', 'Puestos'])
+  const [pages, setPages] = useState(['Partidos', 'Apuestas', 'Posiciones'])
 
   // useEffect(() => {
   //   getUser()
@@ -130,7 +130,7 @@ export const AuthContextProvider =({children})=> {
             e.identity_data.picture ? setAvatar(e.identity_data.picture):'U'
           });
           if(['bonkalvarado@gmail.com','codigoid@hotmail.com','testbvirreyra@gmail.com','vlcyamil@gmail.com'].includes(user.email)){
-            setPages( ['Partidos', 'Apuestas', 'Puestos','Admin'])
+            setPages( ['Partidos', 'Apuestas', 'Posiciones','Admin'])
             user.role = 'admin';
           } 
           setUsuario(user)

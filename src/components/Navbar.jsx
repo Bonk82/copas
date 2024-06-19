@@ -36,7 +36,7 @@ export const Navbar = () => {
     setAnchorElNav(null);
     if(destino === 'Partidos') navigate('/');
     if(destino === 'Apuestas') navigate('/bet');
-    if(destino === 'Puestos') navigate('/ranking');
+    if(destino === 'Posiciones') navigate('/ranking');
     if(destino === 'Admin') navigate('/admin');
   };
 

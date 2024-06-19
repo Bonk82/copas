@@ -221,27 +221,27 @@ export const Bet = () => {
             {buttons}
           </ToggleButtonGroup>
         </Box>
-        {grilla.mostrar && 
-          <Box sx={{ height:{xs:600,md:800}, display:'flex',justifyContent:'center',flexDirection:'column',paddingX:{xs:0.5,md:40},gap:1 }}>
-            <Typography variant="h5" sx={{fontWeight:500,backgroundColor:'secondary.main',color:'persist.main',borderRadius:2,pl:4,mb:1}} >{grilla.tipo}</Typography>
+        <Box sx={{ height:{xs:580,md:580}, display:'flex',justifyContent:'center',flexDirection:'column',paddingX:{xs:0.5,md:40} }}>
+          <Typography variant="h5" sx={{fontWeight:500,backgroundColor:'secondary.main',color:'persist.main',borderRadius:2,pl:4,mb:1}} >{grilla.tipo}</Typography>
+          {grilla.mostrar && 
             <DataGrid
               autoHeight
               getRowId={(row) =>  ['Apostar','Historial Personal'].includes(grilla.tipo) ? row.id_partido : row.id_apuesta}
               rows={grilla.filas}
               columns={grilla.columnas}
-              pageSize={10}
               density="compact"
               initialState={{
                 pagination: { paginationModel: { pageSize: 10 } },
               }}
-              pageSizeOptions={[5,10,25]}
+              // pageSizeOptions={[5,10,25]}
               disableSelectionOnClick
               experimentalFeatures={{ newEditingApi: true }}
               columnVisibilityModel={{id_partido:false,id_apuesta:false,activo:false}}
               rowHeight={70}
               localeText={esES.components.MuiDataGrid.defaultProps.localeText}
             />
-          </Box>}
+          }
+        </Box>
       </Box>
       <Snackbar onClose={handleClose} open={alerta[0]} TransitionComponent={slideAlert} autoHideDuration={6000} anchorOrigin={{vertical:'top',horizontal:'right'}}>
         <Alert severity={alerta[1]} sx={{ width: '100%' }}> {alerta[2]}</Alert>
