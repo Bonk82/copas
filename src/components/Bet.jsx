@@ -183,7 +183,7 @@ export const Bet = () => {
         // where u.grupo = '${usuario.grupo}' order by p.fecha.toDate(), u.nombre`,[apuestasAll,partidosAll,usuariosAll]);
         console.log('en grupo apuestas',apuestas);
         // filas = apuestas.filter(f=>dayjs(f.fecha).toDate() < dayjs().toDate());
-        filas = apuestas
+        filas = await apuestas.filter(f=>new Date(f.fecha).getTime() < new Date().getTime()).sort((a,b)=>new Date(b.fecha).getTime() - new Date(a.fecha).getTime())
         // filas = await filas.sort((a,b)=>b.fecha - a.fecha)
 
         columnas = [
@@ -221,25 +221,27 @@ export const Bet = () => {
             {buttons}
           </ToggleButtonGroup>
         </Box>
-        <Box sx={{ height:{xs:580,md:580}, display:'flex',justifyContent:'center',flexDirection:'column',paddingX:{xs:0.5,md:40} }}>
+        <Box sx={{ height:{xs:580,md:450}, display:'flex',justifyContent:'center',flexDirection:'column',paddingX:{xs:0.5,md:40} }}>
           <Typography variant="h5" sx={{fontWeight:500,backgroundColor:'secondary.main',color:'persist.main',borderRadius:2,pl:4,mb:1}} >{grilla.tipo}</Typography>
           {grilla.mostrar && 
-            <DataGrid
-              autoHeight
-              getRowId={(row) =>  ['Apostar','Historial Personal'].includes(grilla.tipo) ? row.id_partido : row.id_apuesta}
-              rows={grilla.filas}
-              columns={grilla.columnas}
-              density="compact"
-              initialState={{
-                pagination: { paginationModel: { pageSize: 10 } },
-              }}
-              // pageSizeOptions={[5,10,25]}
-              disableSelectionOnClick
-              experimentalFeatures={{ newEditingApi: true }}
-              columnVisibilityModel={{id_partido:false,id_apuesta:false,activo:false}}
-              rowHeight={70}
-              localeText={esES.components.MuiDataGrid.defaultProps.localeText}
-            />
+            <div style={{width:'100%',height:400}}>
+              <DataGrid
+                autoHeight
+                getRowId={(row) =>  ['Apostar','Historial Personal'].includes(grilla.tipo) ? row.id_partido : row.id_apuesta}
+                rows={grilla.filas}
+                columns={grilla.columnas}
+                density="compact"
+                initialState={{
+                  pagination: { paginationModel: { pageSize: 10 } },
+                }}
+                pageSizeOptions={[5,10,25]}
+                disableSelectionOnClick
+                experimentalFeatures={{ newEditingApi: true }}
+                columnVisibilityModel={{id_partido:false,id_apuesta:false,activo:false}}
+                rowHeight={70}
+                localeText={esES.components.MuiDataGrid.defaultProps.localeText}
+              />
+            </div>
           }
         </Box>
       </Box>
