@@ -7,7 +7,7 @@ export const ProtectedRoute = ({children}) => {
 
 
   // if (loading) return <h1>Loading</h1>;
-  console.log('protected routes',usuario);
+  // console.log('protected routes',usuario);
   if (!usuario) return <Navigate to="/login" />;
 
   return <>{children}</>

@@ -90,6 +90,8 @@ export const Bet = () => {
     setGrilla({mostrar:true,filas:pivotActivos,columnas:colApuestas,tipo:'Apostar'})
   }
 
+
+
   const colPartidos = [
     {field:'puntaje',headerName:'Puntos', minWidth:40,flex:1,type:'number',
       renderCell:(params)=>{ return <Typography variant="h4" style={{display:'grid',placeItems:'center',marginTop:'0.5rem'}}>{params.row.puntaje}</Typography>}
@@ -122,8 +124,9 @@ export const Bet = () => {
       },
     },
     {field:'fid_equipoa',headerName:'Equipo', minWidth:90, flex:1, align:'center'
-    , renderCell: (params) =><figure style={{alignItems:'center',margin:1,display:'flex',justifyContent:'flex-start'}}>
-      <img title={`${params.row.equipoa}`} width='50' src={`../assets/${params.row.codigoa}.png`} alt='X'/>
+    , renderCell: (params) =><figure style={{alignItems:'center',margin:1,display:'flex',justifyContent:'flex-start',cursor:'pointer'}}>
+      <img title={`${params.row.equipoa}`} width='50' src={`../assets/${params.row.codigoa}.png`} alt='X'
+      onClick={()=>incrementBet(params.row,'a')} />
       <figcaption>{`${params.row.equipoa}`}</figcaption>
     </figure>},
     {field:'beta',headerName:'Goles', minWidth:40,flex:1,editable:true,type:'number',min:0,max:9,align:'center',
@@ -133,8 +136,9 @@ export const Bet = () => {
       renderCell:(params)=>{ return <Typography variant="h4" style={{display:'grid',placeItems:'center'}}>{params.row.betb}</Typography>}
     },
     {field:'fid_equipob',headerName:'Equipo', minWidth:90, flex:1, align:'center', 
-    renderCell: (params) =><figure style={{alignItems:'center',margin:1,display:'flex',justifyContent:'flex-start'}}>
-      <img title={`${params.row.equipob}`} width='50' src={`../assets/${params.row.codigob}.png`} alt='X'/>
+    renderCell: (params) =><figure style={{alignItems:'center',margin:1,display:'flex',justifyContent:'flex-start',cursor:'pointer'}}>
+      <img title={`${params.row.equipob}`} width='50' src={`../assets/${params.row.codigob}.png`} alt='X'
+      onClick={()=>incrementBet(params.row,'b')}/>
       <figcaption>{`${params.row.equipob}`}</figcaption>
     </figure>},
     {field:'fechaPartidoStr',headerName:'Fecha Partido', minWidth:100,flex:1,editable:false},
@@ -211,7 +215,33 @@ export const Bet = () => {
     }
   }
 
+  const incrementBet = (data,equipo) =>{
+    console.log('increment',data,equipo,lasApuestas);
+    let pivot = [];
+    lasApuestas.forEach(e => {
+      if(e.id_partido == data.id_partido) equipo == 'a'? e.beta += 1 : e.betb += 1
+      if(e.beta<0) e.beta = 0;
+      if(e.betb<0) e.betb = 0;
+      if(e.beta>10) e.beta = 10;
+      if(e.betb>10) e.betb = 10;
+      pivot.push(e) 
+    });
+    setLasApuestas(pivot)
+  }
 
+  // const decrementBet = (data,equipo) =>{
+  //   console.log('decrement',data,equipo,lasApuestas);
+  //   let pivot = [];
+  //   lasApuestas.forEach(e => {
+  //     if(e.id_partido == data.id_partido) equipo == 'a'? e.beta -= 1 : e.betb -= 1
+  //     if(e.beta<0) e.beta = 0;
+  //     if(e.betb<0) e.betb = 0;
+  //     if(e.beta>10) e.beta = 10;
+  //     if(e.betb>10) e.betb = 10;
+  //     pivot.push(e) 
+  //   });
+  //   setLasApuestas(pivot)
+  // }
 
   return (
     <>

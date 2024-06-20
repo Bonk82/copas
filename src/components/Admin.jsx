@@ -116,7 +116,7 @@ export const Admin = () => {
       if(data.scorea > data.scoreb && e.beta > e.betb) puntaje += elFactor;//acierto a ganador A
       if(data.scorea < data.scoreb && e.beta < e.betb) puntaje += elFactor;//acierto a ganador B
       if(data.scorea == data.scoreb && e.beta == e.betb) puntaje += elFactor;//acierto al empate
-      if(data.scorea == e.beta && e.scoreb == e.betb) puntaje += (2*elFactor);//acierto al resultado exacto
+      if(data.scorea == e.beta && e.scoreb == e.betb) puntaje += 2*(elFactor || 1);//acierto al resultado exacto
       //TODO: agregar la valoracion del factor de equipo y el tiempo antes del partido
       e.puntaje = puntaje;
       console.log('laApuesta',e,puntaje);
