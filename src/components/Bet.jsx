@@ -216,14 +216,14 @@ export const Bet = () => {
   }
 
   const incrementBet = (data,equipo) =>{
-    console.log('increment',data,equipo,lasApuestas);
+    // console.log('increment',data,equipo,lasApuestas);
     let pivot = [];
     lasApuestas.forEach(e => {
       if(e.id_partido == data.id_partido) equipo == 'a'? e.beta += 1 : e.betb += 1
       if(e.beta<0) e.beta = 0;
       if(e.betb<0) e.betb = 0;
-      if(e.beta>10) e.beta = 10;
-      if(e.betb>10) e.betb = 10;
+      if(e.beta>8) e.beta = 0;
+      if(e.betb>8) e.betb = 0;
       pivot.push(e) 
     });
     setLasApuestas(pivot)
