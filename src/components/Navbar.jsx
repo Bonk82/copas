@@ -19,7 +19,6 @@ export const Navbar = () => {
   const { usuario,logout,avatar,pages } = UserAuth();
   const [anchorElNav, setAnchorElNav] = useState(null);
   const [anchorElUser, setAnchorElUser] = useState(null);
-  
 
   const navigate = useNavigate();
 
@@ -86,7 +85,7 @@ export const Navbar = () => {
               onClick={handleOpenNavMenu}
               color="inherit"
             >
-              <MenuIcon />
+              <MenuIcon fontSize='2.5rem' />
             </IconButton>
             <Menu
               id="menu-appbar"
@@ -108,14 +107,14 @@ export const Navbar = () => {
             >
               {pages.map((page) => (
                 <MenuItem key={page} onClick={handleCloseNavMenu}>
-                  <Typography textAlign="center">{page}</Typography>
+                  <Typography sx={{fontSize:'2rem',color:'primary.main',fontWeight:700}} textAlign="center">{page}</Typography>
                 </MenuItem>
               ))}
             </Menu>
           </Box>
-          <Avatar sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} src="../assets/icono.jpeg.jpg" variant='rounded'/>
+          <Avatar sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} src="../assets/icono.jpeg" variant='rounded'/>
           <Typography
-            variant="h5"
+            variant="h4"
             noWrap
             component="a"
             href=""
@@ -169,7 +168,7 @@ export const Navbar = () => {
             >
               {settings.map((setting) => (
                 <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                  <Typography textAlign="center">{setting}</Typography>
+                  <Typography variant='h2' sx={{fontSize:'2rem'}} textAlign="center">{setting}</Typography>
                 </MenuItem>
               ))}
             </Menu>

@@ -12,6 +12,8 @@ import { UserAuth } from "../context/AuthContext";
 let apuestasAll = [];
 let partidosAll = [];
 
+let misApuestas = [];
+
 export const Bet = () => {
   const { loading,createReg,partidos,apuestas,getReg,updateReg } = useSupa();
   const {usuario} = UserAuth();
@@ -87,6 +89,7 @@ export const Bet = () => {
     console.log('partidos y apuestas', pivotPasado,pivotActivos);
     setLosPartidos(pivotPasado);
     setLasApuestas(pivotActivos);
+    misApuestas = pivotActivos;
     setGrilla({mostrar:true,filas:pivotActivos,columnas:colApuestas,tipo:'Apostar'})
   }
 
@@ -156,9 +159,9 @@ export const Bet = () => {
   }
 
   const buttons = [
-    <ToggleButton  key="apuestasDisponibles" value='Apostar' onClick={()=>cargarGrilla('Apostar')}>Apostar</ToggleButton>,
-    <ToggleButton  key="userApuestas" value='Historial Personal' onClick={()=>cargarGrilla('Historial Personal')}>Historial Personal</ToggleButton>,
-    <ToggleButton  key="fechaApuestas" value='Apuestas del Grupo' onClick={()=>cargarGrilla('Apuestas del Grupo')}>Apuestas del Grupo</ToggleButton>
+    <ToggleButton  key="apuestasDisponibles" value='Apostar' sx={{fontSize:'1.5rem'}} onClick={()=>cargarGrilla('Apostar')}>Apostar</ToggleButton>,
+    <ToggleButton  key="userApuestas" value='Historial Personal' sx={{fontSize:'1.5rem'}} onClick={()=>cargarGrilla('Historial Personal')}>Historial Personal</ToggleButton>,
+    <ToggleButton  key="fechaApuestas" value='Apuestas del Grupo' sx={{fontSize:'1.5rem'}} onClick={()=>cargarGrilla('Apuestas del Grupo')}>Apuestas del Grupo</ToggleButton>
   ];
 
   const cargarGrilla = async (tipo)=>{
@@ -216,9 +219,9 @@ export const Bet = () => {
   }
 
   const incrementBet = (data,equipo) =>{
-    // console.log('increment',data,equipo,lasApuestas);
+    console.log('increment',data,equipo,misApuestas);
     let pivot = [];
-    lasApuestas.forEach(e => {
+    misApuestas.forEach(e => {
       if(e.id_partido == data.id_partido) equipo == 'a'? e.beta += 1 : e.betb += 1
       if(e.beta<0) e.beta = 0;
       if(e.betb<0) e.betb = 0;
@@ -228,20 +231,6 @@ export const Bet = () => {
     });
     setLasApuestas(pivot)
   }
-
-  // const decrementBet = (data,equipo) =>{
-  //   console.log('decrement',data,equipo,lasApuestas);
-  //   let pivot = [];
-  //   lasApuestas.forEach(e => {
-  //     if(e.id_partido == data.id_partido) equipo == 'a'? e.beta -= 1 : e.betb -= 1
-  //     if(e.beta<0) e.beta = 0;
-  //     if(e.betb<0) e.betb = 0;
-  //     if(e.beta>10) e.beta = 10;
-  //     if(e.betb>10) e.betb = 10;
-  //     pivot.push(e) 
-  //   });
-  //   setLasApuestas(pivot)
-  // }
 
   return (
     <>

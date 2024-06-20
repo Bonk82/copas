@@ -14,9 +14,9 @@ import { esES } from "@mui/x-data-grid/locales";
 export const Info = () => {
   const { loading,getReg } = useSupa();
   const buttons = [
-    <ToggleButton  key="resultados" value='resultados' onClick={()=>cargarGrilla('resultados')}>Resultados</ToggleButton>,
-    <ToggleButton  key="posiciones" value='posiciones' onClick={()=>cargarGrilla('posiciones')}>Posiciones</ToggleButton>,
-    <ToggleButton  key="dinamico" value='dinamico' onClick={()=>cargarGrilla('dinamico')}>Dinámico</ToggleButton>
+    <ToggleButton  key="resultados" value='resultados' sx={{fontSize:'1.5rem'}} onClick={()=>cargarGrilla('resultados')}>Resultados</ToggleButton>,
+    <ToggleButton  key="posiciones" value='posiciones' sx={{fontSize:'1.5rem'}} onClick={()=>cargarGrilla('posiciones')}>Posiciones</ToggleButton>,
+    <ToggleButton  key="dinamico" value='dinamico' sx={{fontSize:'1.5rem'}} onClick={()=>cargarGrilla('dinamico')}>Dinámico</ToggleButton>
   ];
   
 
