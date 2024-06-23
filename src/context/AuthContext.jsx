@@ -130,7 +130,7 @@ export const AuthContextProvider =({children})=> {
           user.identities.forEach(e => {
             e.identity_data.picture ? setAvatar(e.identity_data.picture):'U'
           });
-          if(['bonkalvarado@gmail.com','codigoid@hotmail.com','testbvirreyra@gmail.com','vlcyamil@gmail.com'].includes(user.email)){
+          if(['bonkalvarado@gmail.com','testbvirreyra@gmail.com','vlcyamil@gmail.com'].includes(user.email)){
             setPages( ['Partidos', 'Apuestas', 'Posiciones','Admin'])
             user.role = 'admin';
           } 
